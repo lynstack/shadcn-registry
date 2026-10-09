@@ -1,0 +1,113 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "eslint",
+    "typescript",
+    "unicorn",
+    "oxc",
+    "import",
+    "promise",
+    "vitest"
+  ],
+  "options": {
+    "typeAware": true,
+    "reportUnusedDisableDirectives": "error"
+  },
+  // Every stable category. The nursery holds rules still in development.
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "pedantic": "error",
+    "perf": "error",
+    "style": "error",
+    "restriction": "error"
+  },
+  "rules": {
+    "eslint/func-style": [
+      "error",
+      "declaration",
+      { "allowArrowFunctions": true }
+    ],
+    "eslint/no-duplicate-imports": [
+      "error",
+      { "allowSeparateTypeImports": true }
+    ],
+    "eslint/no-magic-numbers": [
+      "error",
+      {
+        "ignore": [0, 1],
+        "ignoreArrayIndexes": true,
+        "ignoreDefaultValues": true
+      }
+    ],
+    "eslint/no-use-before-define": ["error", { "functions": false }],
+    "eslint/one-var": ["error", "never"],
+    // Blank lines split imports into groups: packages, then the package's
+    // own modules; each group is sorted on its own.
+    "eslint/sort-imports": ["error", { "allowSeparatedGroups": true }],
+    // noPropertyAccessFromIndexSignature asks for brackets on index
+    // signatures, so dot notation applies only to declared properties.
+    "typescript/dot-notation": [
+      "error",
+      { "allowIndexSignaturePropertyAccess": true }
+    ],
+    "typescript/no-confusing-void-expression": [
+      "error",
+      { "ignoreArrowShorthand": true }
+    ],
+    "vitest/valid-title": ["error", { "allowArguments": true }],
+
+    // Each rule below contradicts another enabled rule, which wins.
+    // import/no-default-export: a library exports names.
+    "import/no-named-export": "off",
+    "import/prefer-default-export": "off",
+    // unicorn/no-null: TypeScript models absent values as undefined.
+    "eslint/no-undefined": "off",
+    // unicorn/prefer-ternary: a conditional value stays an expression.
+    "eslint/no-ternary": "off",
+    // vitest/prefer-importing-vitest-globals: tests import what they use.
+    "vitest/no-importing-vitest-globals": "off",
+    // vitest/prefer-called-once: a single call reads as toHaveBeenCalledOnce.
+    "vitest/prefer-called-times": "off",
+
+    // These forbid syntax that the ES2024 target supports.
+    "oxc/no-async-await": "off",
+    "oxc/no-optional-chaining": "off",
+    "oxc/no-rest-spread-properties": "off",
+
+    // The package is a Node.js tool: its modules read files and run there.
+    "import/no-nodejs-modules": "off",
+    // Parser trees, file system entries and process state are mutable
+    // types the package only reads.
+    "typescript/prefer-readonly-parameter-types": "off",
+
+    // Every test runs under Vitest's default timeout; none needs its own.
+    "vitest/require-test-timeout": "off",
+    // expect.requireAssertions in vitest.config.ts fails every test, sync
+    // or async, that asserts nothing, so no test calls expect.hasAssertions().
+    "vitest/prefer-expect-assertions": "off"
+  },
+  "overrides": [
+    {
+      // The tools load their configuration from a default export.
+      "files": ["*.config.ts"],
+      "rules": { "import/no-default-export": "off" }
+    },
+    {
+      "files": ["src/**/*.test.ts", "test/**/*.ts"],
+      "rules": {
+        // vitest/require-top-level-describe puts a whole file in one
+        // function, which no size limit for functions can allow.
+        "eslint/max-lines-per-function": "off",
+        "eslint/max-statements": "off",
+        // Sizes and counts are the inputs under test.
+        "eslint/no-magic-numbers": "off"
+      }
+    }
+  ],
+  "ignorePatterns": ["dist"],
+  "env": {
+    "builtin": true,
+    "node": true
+  }
+}

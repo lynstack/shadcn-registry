@@ -1,0 +1,67 @@
+{
+  "name": "@lynstack/shadcn-registry",
+  "version": "0.0.0",
+  "description": "Builds a shadcn registry from the source of a TypeScript component library: items, files, dependencies and theme, read from the code itself.",
+  "keywords": [
+    "shadcn",
+    "registry",
+    "components",
+    "cli"
+  ],
+  "homepage": "https://github.com/lynstack/shadcn-registry#readme",
+  "bugs": "https://github.com/lynstack/shadcn-registry/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lynstack/shadcn-registry.git",
+    "directory": "packages/shadcn-registry"
+  },
+  "license": "MIT",
+  "author": "Tim Phan",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "shadcn-registry": "./dist/cli.mjs"
+  },
+  "imports": {
+    "#/*": "./src/*",
+    "#test/*": "./test/*"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "check": "pnpm build && pnpm typecheck && pnpm lint && pnpm test",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.build.json",
+    "lint": "oxlint",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "oxc-parser": "^0.153.0",
+    "oxc-resolver": "^11.24.2",
+    "postcss": "^8.5.29",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/core": "catalog:",
+    "@types/node": "catalog:",
+    "oxlint": "catalog:",
+    "oxlint-tsgolint": "catalog:",
+    "publint": "catalog:",
+    "shadcn": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "shadcn": "^4.21.4"
+  },
+  "engines": {
+    "node": ">=24.11"
+  }
+}
