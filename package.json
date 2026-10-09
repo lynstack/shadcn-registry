@@ -1,0 +1,22 @@
+{
+  "name": "shadcn-registry-workspace",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "pnpm format:check && pnpm --recursive --if-present check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "catalog:"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24.21.0",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@12.8.1"
+}

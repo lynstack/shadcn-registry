@@ -1,0 +1,34 @@
+packages:
+  - packages/*
+  - consumers/*
+catalog:
+  "@arethetypeswrong/core": 0.18.5
+  "@base-ui/react": 1.9.0
+  "@lynstack/class-recipe": 1.7.3
+  "@tailwindcss/cli": 4.3.3
+  "@types/node": 24.19.2
+  "@types/react": 19.3.0
+  "@types/react-dom": 19.3.0
+  oxc-parser: 0.153.0
+  oxc-resolver: 11.24.2
+  oxlint: 1.87.0
+  oxlint-tsgolint: 7.0.2003
+  postcss: 8.5.29
+  prettier: 3.9.10
+  publint: 0.3.25
+  react: 19.3.0
+  react-dom: 19.3.0
+  shadcn: 4.21.4
+  tailwindcss: 4.3.3
+  tsdown: 0.23.0
+  typescript: 7.0.2
+  vitest: 5.0.3
+  yaml: 2.9.1
+allowBuilds:
+  "@parcel/watcher": false
+minimumReleaseAgeExclude:
+  # The maintainer's own packages, used as soon as they are released.
+  - "@lynstack/*"
+  - "@types/node@24.19.2"
+  - prettier@3.9.10
+saveExact: true
