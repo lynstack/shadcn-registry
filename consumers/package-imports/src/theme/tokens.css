@@ -1,0 +1,20 @@
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.2 0 0);
+  --muted: oklch(0.95 0 0);
+  --danger: oklch(0.58 0.22 27);
+  --danger-foreground: oklch(0.98 0 0);
+  --row-height: 1.75rem;
+}
+
+.dark {
+  --background: oklch(0.18 0 0);
+  --foreground: oklch(0.95 0 0);
+  --muted: oklch(0.26 0 0);
+}
+
+@media (pointer: coarse) {
+  :root {
+    --row-height: 2.75rem;
+  }
+}

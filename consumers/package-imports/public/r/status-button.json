@@ -1,0 +1,29 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "dependencies": [
+    "@base-ui/react@^1.9.0"
+  ],
+  "description": "A button that shows the status of what it acts on.",
+  "files": [
+    {
+      "content": "/**\n * Status Button: a button that shows the status of what it acts on.\n *\n * @packageDocumentation\n */\n\nexport { StatusButton } from \"./status-button\";\n",
+      "path": "src/components/ui/status-button/index.ts",
+      "target": "@ui/status-button/index.ts",
+      "type": "registry:ui"
+    },
+    {
+      "content": "import { Button } from \"@base-ui/react/button\";\nimport type { ReactNode } from \"react\";\n\nimport { Badge } from \"#/components/ui/badge/badge\";\nimport { join } from \"#/lib/classes/join\";\n\nexport function StatusButton({\n  children,\n  status,\n}: {\n  readonly children: ReactNode;\n  readonly status: string;\n}) {\n  return (\n    <Button className={join(\"inline-flex items-center gap-2 rounded-md px-3\")}>\n      {children}\n      <Badge>{status}</Badge>\n    </Button>\n  );\n}\n",
+      "path": "src/components/ui/status-button/status-button.tsx",
+      "target": "@ui/status-button/status-button.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "name": "status-button",
+  "registryDependencies": [
+    "https://example.com/package-imports/r/badge.json",
+    "https://example.com/package-imports/r/classes.json",
+    "https://example.com/package-imports/r/style.json"
+  ],
+  "title": "Status Button",
+  "type": "registry:ui"
+}

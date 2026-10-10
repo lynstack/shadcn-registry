@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "dependencies": [
+    "@lynstack/class-recipe@^1.7.3"
+  ],
+  "files": [
+    {
+      "content": "import { cx } from \"@lynstack/class-recipe\";\nimport type { ClassValue } from \"@lynstack/class-recipe\";\n\nexport function join(...values: ClassValue[]): string {\n  return cx(...values);\n}\n",
+      "path": "src/lib/classes/join.ts",
+      "target": "@lib/classes/join.ts",
+      "type": "registry:lib"
+    }
+  ],
+  "name": "classes",
+  "title": "Classes",
+  "type": "registry:lib"
+}

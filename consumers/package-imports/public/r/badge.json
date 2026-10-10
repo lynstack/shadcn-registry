@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "dependencies": [
+    "@lynstack/class-recipe@^1.7.3"
+  ],
+  "description": "Shows a short status next to other content.",
+  "files": [
+    {
+      "content": "import { cva } from \"@lynstack/class-recipe\";\nimport type { VariantsOf } from \"@lynstack/class-recipe\";\n\nexport const badgeVariants = cva({\n  base: \"inline-flex rounded-sm px-1.5 animate-in fade-in\",\n  variants: {\n    tone: {\n      danger: \"bg-danger text-danger-foreground\",\n      neutral: \"bg-muted text-foreground\",\n    },\n    density: {\n      comfortable: \"text-sm\",\n      compact: \"text-xs\",\n    },\n  },\n  defaultVariants: { tone: \"neutral\" },\n});\n\nexport type BadgeTone = NonNullable<VariantsOf<typeof badgeVariants>[\"tone\"]>;\n",
+      "path": "src/components/ui/badge/badge-variants.ts",
+      "target": "@ui/badge/badge-variants.ts",
+      "type": "registry:ui"
+    },
+    {
+      "content": "import type { ComponentProps } from \"react\";\n\nimport { useSettings } from \"#/lib/settings/settings-context\";\nimport type { BadgeTone } from \"./badge-variants\";\nimport { badgeVariants } from \"./badge-variants\";\n\nexport function Badge({\n  className,\n  tone,\n  ...props\n}: ComponentProps<\"span\"> & { readonly tone?: BadgeTone }) {\n  const { density } = useSettings();\n  return (\n    <span className={badgeVariants({ tone, density, className })} {...props} />\n  );\n}\n",
+      "path": "src/components/ui/badge/badge.tsx",
+      "target": "@ui/badge/badge.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "content": "/**\n * Badge: shows a short status next to other content.\n *\n * @packageDocumentation\n */\n\nexport { Badge } from \"./badge\";\nexport type { BadgeTone } from \"./badge-variants\";\n",
+      "path": "src/components/ui/badge/index.ts",
+      "target": "@ui/badge/index.ts",
+      "type": "registry:ui"
+    }
+  ],
+  "name": "badge",
+  "registryDependencies": [
+    "https://example.com/package-imports/r/settings.json",
+    "https://example.com/package-imports/r/style.json"
+  ],
+  "title": "Badge",
+  "type": "registry:ui"
+}

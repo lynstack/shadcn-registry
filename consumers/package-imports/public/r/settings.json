@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "files": [
+    {
+      "content": "import { createContext, useContext } from \"react\";\n\nexport interface Settings {\n  readonly density: \"compact\" | \"comfortable\";\n}\n\nexport const SettingsContext = createContext<Settings>({ density: \"compact\" });\n\nexport function useSettings(): Settings {\n  return useContext(SettingsContext);\n}\n",
+      "path": "src/lib/settings/settings-context.ts",
+      "target": "@lib/settings/settings-context.ts",
+      "type": "registry:lib"
+    }
+  ],
+  "name": "settings",
+  "title": "Settings",
+  "type": "registry:lib"
+}

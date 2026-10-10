@@ -1,0 +1,159 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "homepage": "https://example.com/package-imports",
+  "items": [
+    {
+      "css": {
+        "@media (pointer: coarse)": {
+          ":root": {
+            "--row-height": "2.75rem"
+          }
+        },
+        "@import \"tw-animate-css\"": {},
+        "@custom-variant dark (&:is(.dark *))": {},
+        "@layer base": {
+          "body": {
+            "background-color": "var(--background)",
+            "color": "var(--foreground)"
+          }
+        }
+      },
+      "cssVars": {
+        "dark": {
+          "background": "oklch(0.18 0 0)",
+          "foreground": "oklch(0.95 0 0)",
+          "muted": "oklch(0.26 0 0)"
+        },
+        "light": {
+          "background": "oklch(1 0 0)",
+          "foreground": "oklch(0.2 0 0)",
+          "muted": "oklch(0.95 0 0)",
+          "danger": "oklch(0.58 0.22 27)",
+          "danger-foreground": "oklch(0.98 0 0)",
+          "row-height": "1.75rem"
+        },
+        "theme": {
+          "color-background": "var(--background)",
+          "color-foreground": "var(--foreground)",
+          "color-muted": "var(--muted)",
+          "color-danger": "var(--danger)",
+          "color-danger-foreground": "var(--danger-foreground)",
+          "spacing-row": "var(--row-height)"
+        }
+      },
+      "dependencies": [
+        "tw-animate-css@^1.4.0"
+      ],
+      "description": "The tokens, the Tailwind theme and the base styles.",
+      "extends": "none",
+      "name": "style",
+      "title": "Style",
+      "type": "registry:style"
+    },
+    {
+      "dependencies": [
+        "@lynstack/class-recipe@^1.7.3"
+      ],
+      "description": "Shows a short status next to other content.",
+      "files": [
+        {
+          "path": "src/components/ui/badge/badge-variants.ts",
+          "target": "@ui/badge/badge-variants.ts",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/badge/badge.tsx",
+          "target": "@ui/badge/badge.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/badge/index.ts",
+          "target": "@ui/badge/index.ts",
+          "type": "registry:ui"
+        }
+      ],
+      "name": "badge",
+      "registryDependencies": [
+        "https://example.com/package-imports/r/settings.json",
+        "https://example.com/package-imports/r/style.json"
+      ],
+      "title": "Badge",
+      "type": "registry:ui"
+    },
+    {
+      "dependencies": [
+        "@lynstack/class-recipe@^1.7.3"
+      ],
+      "files": [
+        {
+          "path": "src/lib/classes/join.ts",
+          "target": "@lib/classes/join.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "name": "classes",
+      "title": "Classes",
+      "type": "registry:lib"
+    },
+    {
+      "files": [
+        {
+          "path": "src/lib/settings/settings-context.ts",
+          "target": "@lib/settings/settings-context.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "name": "settings",
+      "title": "Settings",
+      "type": "registry:lib"
+    },
+    {
+      "description": "Sets the density of every component below it.",
+      "files": [
+        {
+          "path": "src/components/settings-provider/index.ts",
+          "target": "@components/settings-provider/index.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/settings-provider/settings-provider.tsx",
+          "target": "@components/settings-provider/settings-provider.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "name": "settings-provider",
+      "registryDependencies": [
+        "https://example.com/package-imports/r/settings.json"
+      ],
+      "title": "Settings Provider",
+      "type": "registry:component"
+    },
+    {
+      "dependencies": [
+        "@base-ui/react@^1.9.0"
+      ],
+      "description": "A button that shows the status of what it acts on.",
+      "files": [
+        {
+          "path": "src/components/ui/status-button/index.ts",
+          "target": "@ui/status-button/index.ts",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/status-button/status-button.tsx",
+          "target": "@ui/status-button/status-button.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "name": "status-button",
+      "registryDependencies": [
+        "https://example.com/package-imports/r/badge.json",
+        "https://example.com/package-imports/r/classes.json",
+        "https://example.com/package-imports/r/style.json"
+      ],
+      "title": "Status Button",
+      "type": "registry:ui"
+    }
+  ],
+  "name": "package-imports"
+}

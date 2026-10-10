@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "description": "Sets the density of every component below it.",
+  "files": [
+    {
+      "content": "/**\n * Settings Provider: sets the density of every component below it.\n *\n * @packageDocumentation\n */\n\nexport { SettingsProvider } from \"./settings-provider\";\nexport type { Settings } from \"#/lib/settings/settings-context\";\n",
+      "path": "src/components/settings-provider/index.ts",
+      "target": "@components/settings-provider/index.ts",
+      "type": "registry:component"
+    },
+    {
+      "content": "import type { ReactNode } from \"react\";\n\nimport { SettingsContext } from \"#/lib/settings/settings-context\";\nimport type { Settings } from \"#/lib/settings/settings-context\";\n\nexport function SettingsProvider({\n  children,\n  settings,\n}: {\n  readonly children: ReactNode;\n  readonly settings: Settings;\n}) {\n  return <SettingsContext value={settings}>{children}</SettingsContext>;\n}\n",
+      "path": "src/components/settings-provider/settings-provider.tsx",
+      "target": "@components/settings-provider/settings-provider.tsx",
+      "type": "registry:component"
+    }
+  ],
+  "name": "settings-provider",
+  "registryDependencies": [
+    "https://example.com/package-imports/r/settings.json"
+  ],
+  "title": "Settings Provider",
+  "type": "registry:component"
+}
