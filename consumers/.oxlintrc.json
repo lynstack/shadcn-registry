@@ -1,0 +1,12 @@
+{
+  // A light set for the consumers, which stand for the libraries of users:
+  // only the rules that catch code that is wrong, React's among them.
+  "plugins": ["eslint", "typescript", "unicorn", "oxc", "react"],
+  "categories": {
+    "correctness": "error"
+  },
+  "ignorePatterns": ["public"],
+  "env": {
+    "browser": true
+  }
+}

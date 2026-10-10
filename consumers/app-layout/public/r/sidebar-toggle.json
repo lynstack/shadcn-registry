@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "files": [
+    {
+      "content": "import { useIsMobile } from \"@/hooks/use-mobile\";\nimport { Button } from \"@/components/ui/button\";\n\nexport function SidebarToggle() {\n  const isMobile = useIsMobile();\n  return <Button variant=\"outline\">{isMobile ? \"Menu\" : \"Collapse\"}</Button>;\n}\n",
+      "path": "src/components/ui/sidebar-toggle.tsx",
+      "target": "@ui/sidebar-toggle.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "name": "sidebar-toggle",
+  "registryDependencies": [
+    "@app-layout/button",
+    "@app-layout/theme",
+    "@app-layout/use-mobile"
+  ],
+  "title": "Sidebar Toggle",
+  "type": "registry:ui"
+}

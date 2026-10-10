@@ -1,0 +1,128 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "homepage": "https://example.com/app-layout",
+  "items": [
+    {
+      "css": {
+        "@layer base": {
+          "body": {
+            "background-color": "var(--background)",
+            "color": "var(--foreground)"
+          }
+        }
+      },
+      "cssVars": {
+        "dark": {
+          "background": "oklch(0.145 0 0)",
+          "foreground": "oklch(0.985 0 0)",
+          "card": "oklch(0.205 0 0)",
+          "primary": "oklch(0.922 0 0)",
+          "primary-foreground": "oklch(0.205 0 0)",
+          "border": "oklch(1 0 0 / 10%)"
+        },
+        "light": {
+          "background": "oklch(1 0 0)",
+          "foreground": "oklch(0.145 0 0)",
+          "card": "oklch(1 0 0)",
+          "primary": "oklch(0.205 0 0)",
+          "primary-foreground": "oklch(0.985 0 0)",
+          "border": "oklch(0.922 0 0)",
+          "radius": "0.625rem"
+        },
+        "theme": {
+          "color-background": "var(--background)",
+          "color-foreground": "var(--foreground)",
+          "color-card": "var(--card)",
+          "color-primary": "var(--primary)",
+          "color-primary-foreground": "var(--primary-foreground)",
+          "color-border": "var(--border)",
+          "radius-lg": "var(--radius)"
+        }
+      },
+      "name": "theme",
+      "title": "Theme",
+      "type": "registry:theme"
+    },
+    {
+      "dependencies": [
+        "@lynstack/class-recipe@^1.7.3"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/button.tsx",
+          "target": "@ui/button.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "name": "button",
+      "registryDependencies": [
+        "@app-layout/theme",
+        "@app-layout/utils"
+      ],
+      "title": "Button",
+      "type": "registry:ui"
+    },
+    {
+      "files": [
+        {
+          "path": "src/components/ui/card.tsx",
+          "target": "@ui/card.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "name": "card",
+      "registryDependencies": [
+        "@app-layout/theme",
+        "@app-layout/utils"
+      ],
+      "title": "Card",
+      "type": "registry:ui"
+    },
+    {
+      "files": [
+        {
+          "path": "src/components/ui/sidebar-toggle.tsx",
+          "target": "@ui/sidebar-toggle.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "name": "sidebar-toggle",
+      "registryDependencies": [
+        "@app-layout/button",
+        "@app-layout/theme",
+        "@app-layout/use-mobile"
+      ],
+      "title": "Sidebar Toggle",
+      "type": "registry:ui"
+    },
+    {
+      "files": [
+        {
+          "path": "src/hooks/use-mobile.ts",
+          "target": "@hooks/use-mobile.ts",
+          "type": "registry:hook"
+        }
+      ],
+      "name": "use-mobile",
+      "title": "Use Mobile",
+      "type": "registry:hook"
+    },
+    {
+      "dependencies": [
+        "@lynstack/class-recipe@^1.7.3",
+        "tailwind-merge@^3.7.0"
+      ],
+      "files": [
+        {
+          "path": "src/lib/utils.ts",
+          "target": "@lib/utils.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "name": "utils",
+      "title": "Utils",
+      "type": "registry:lib"
+    }
+  ],
+  "name": "app-layout"
+}

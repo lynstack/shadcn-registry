@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "dependencies": [
+    "@lynstack/class-recipe@^1.7.3"
+  ],
+  "files": [
+    {
+      "content": "import type { PropsOf } from \"@lynstack/class-recipe\";\nimport type { ComponentProps } from \"react\";\n\nimport { cva } from \"@/lib/utils\";\n\nconst buttonVariants = cva({\n  base: \"inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium\",\n  variants: {\n    variant: {\n      default: \"bg-primary text-primary-foreground\",\n      outline: \"border border-border bg-background\",\n    },\n  },\n  defaultVariants: { variant: \"default\" },\n});\n\nexport function Button({\n  className,\n  variant,\n  ...props\n}: ComponentProps<\"button\"> & PropsOf<typeof buttonVariants>) {\n  return (\n    <button className={buttonVariants({ variant, className })} {...props} />\n  );\n}\n",
+      "path": "src/components/ui/button.tsx",
+      "target": "@ui/button.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "name": "button",
+  "registryDependencies": [
+    "@app-layout/theme",
+    "@app-layout/utils"
+  ],
+  "title": "Button",
+  "type": "registry:ui"
+}

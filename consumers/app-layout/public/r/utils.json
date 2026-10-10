@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "dependencies": [
+    "@lynstack/class-recipe@^1.7.3",
+    "tailwind-merge@^3.7.0"
+  ],
+  "files": [
+    {
+      "content": "import { createRecipes } from \"@lynstack/class-recipe\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport const { cx: cn, cva } = createRecipes({ join: twMerge });\n",
+      "path": "src/lib/utils.ts",
+      "target": "@lib/utils.ts",
+      "type": "registry:lib"
+    }
+  ],
+  "name": "utils",
+  "title": "Utils",
+  "type": "registry:lib"
+}

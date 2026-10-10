@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "files": [
+    {
+      "content": "import { useEffect, useState } from \"react\";\n\nconst query = \"(max-width: 767px)\";\n\nexport function useIsMobile(): boolean {\n  const [isMobile, setIsMobile] = useState(false);\n  useEffect(() => {\n    const media = window.matchMedia(query);\n    const update = (): void => {\n      setIsMobile(media.matches);\n    };\n    update();\n    media.addEventListener(\"change\", update);\n    return () => {\n      media.removeEventListener(\"change\", update);\n    };\n  }, []);\n  return isMobile;\n}\n",
+      "path": "src/hooks/use-mobile.ts",
+      "target": "@hooks/use-mobile.ts",
+      "type": "registry:hook"
+    }
+  ],
+  "name": "use-mobile",
+  "title": "Use Mobile",
+  "type": "registry:hook"
+}

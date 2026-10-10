@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "files": [
+    {
+      "content": "import type { ComponentProps } from \"react\";\n\nimport { cn } from \"@/lib/utils\";\n\nexport function Card({ className, ...props }: ComponentProps<\"div\">) {\n  return (\n    <div\n      className={cn(\"rounded-lg border border-border bg-card p-4\", className)}\n      {...props}\n    />\n  );\n}\n",
+      "path": "src/components/ui/card.tsx",
+      "target": "@ui/card.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "name": "card",
+  "registryDependencies": [
+    "@app-layout/theme",
+    "@app-layout/utils"
+  ],
+  "title": "Card",
+  "type": "registry:ui"
+}

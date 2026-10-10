@@ -1,0 +1,32 @@
+{
+  "name": "@consumers/app-layout",
+  "version": "0.0.0",
+  "private": true,
+  "description": "A registry in shadcn's own layout: one file per component in src/components/ui, @/ imports, items named by namespace, one theme.",
+  "type": "module",
+  "scripts": {
+    "check": "shadcn-registry check && tsc -p . && pnpm lint",
+    "lint": "oxlint",
+    "registry:build": "shadcn-registry build",
+    "registry:test": "shadcn-registry test"
+  },
+  "dependencies": {
+    "@lynstack/class-recipe": "^1.7.3",
+    "tailwind-merge": "^3.7.0"
+  },
+  "devDependencies": {
+    "@lynstack/shadcn-registry": "workspace:*",
+    "@tailwindcss/cli": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "oxlint": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "shadcn": "catalog:",
+    "tailwindcss": "catalog:",
+    "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}
