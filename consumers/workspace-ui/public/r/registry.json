@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "homepage": "https://example.com/workspace-ui",
+  "items": [
+    {
+      "dependencies": [
+        "@consumers/workspace-tokens@^1.2.0",
+        "@lynstack/class-recipe@1.7.3"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/stack.tsx",
+          "target": "@ui/stack.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "name": "stack",
+      "title": "Stack",
+      "type": "registry:ui"
+    }
+  ],
+  "name": "workspace-ui"
+}

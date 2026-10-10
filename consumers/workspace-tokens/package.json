@@ -1,0 +1,18 @@
+{
+  "name": "@consumers/workspace-tokens",
+  "version": "1.2.0",
+  "private": true,
+  "description": "A workspace package that workspace-ui depends on with workspace:^; it stands for a package the monorepo publishes.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "check": "tsc -p . && pnpm lint",
+    "lint": "oxlint"
+  },
+  "devDependencies": {
+    "oxlint": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "@consumers/workspace-ui",
+  "version": "0.0.0",
+  "private": true,
+  "description": "A registry in a pnpm monorepo: a catalog: range and a workspace:^ range, which the registry publishes as pnpm publish would. It has no registry:test, as its workspace package is not on npm.",
+  "type": "module",
+  "scripts": {
+    "check": "shadcn-registry check && tsc -p . && pnpm lint",
+    "lint": "oxlint",
+    "registry:build": "shadcn-registry build"
+  },
+  "dependencies": {
+    "@consumers/workspace-tokens": "workspace:^",
+    "@lynstack/class-recipe": "catalog:"
+  },
+  "devDependencies": {
+    "@lynstack/shadcn-registry": "workspace:*",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "oxlint": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "shadcn": "catalog:",
+    "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}

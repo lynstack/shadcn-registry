@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "dependencies": [
+    "@consumers/workspace-tokens@^1.2.0",
+    "@lynstack/class-recipe@1.7.3"
+  ],
+  "files": [
+    {
+      "content": "import { spacing } from \"@consumers/workspace-tokens\";\nimport { cx } from \"@lynstack/class-recipe\";\nimport type { ComponentProps } from \"react\";\n\nexport function Stack({ className, style, ...props }: ComponentProps<\"div\">) {\n  return (\n    <div\n      className={cx(\"flex flex-col\", className)}\n      style={{ gap: spacing.compact, ...style }}\n      {...props}\n    />\n  );\n}\n",
+      "path": "src/components/ui/stack.tsx",
+      "target": "@ui/stack.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "name": "stack",
+  "title": "Stack",
+  "type": "registry:ui"
+}
