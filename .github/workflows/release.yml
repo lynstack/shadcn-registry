@@ -1,0 +1,40 @@
+name: Release @lynstack/shadcn-registry
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    if: startsWith(github.event.release.tag_name, 'shadcn-registry@')
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: pnpm/setup@v3
+        with:
+          require-lockfile: true
+      - name: Check that the release tag matches the package version
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          version="$(node -p 'require("./packages/shadcn-registry/package.json").version')"
+          if [ "$TAG" != "shadcn-registry@$version" ]; then
+            echo "::error::The tag $TAG does not match the version shadcn-registry@$version."
+            exit 1
+          fi
+      - run: pnpm check
+      # A recursive publish skips a version already on npm, so a release of
+      # a version published by hand, or a rerun, publishes nothing. The
+      # release checks out its tag, which is on no branch, so pnpm's git
+      # checks cannot pass.
+      - name: Publish to npm
+        run: pnpm --filter @lynstack/shadcn-registry publish --recursive --no-git-checks
