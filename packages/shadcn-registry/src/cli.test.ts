@@ -21,10 +21,18 @@ function runWith(
   root: string,
   ...args: string[]
 ): { code: number; output: string } {
+  const overridden = new Set(
+    Object.keys(env).map((name) => name.toUpperCase()),
+  );
+  const inherited = Object.fromEntries(
+    Object.entries(process.env).filter(
+      ([name]) => !overridden.has(name.toUpperCase()),
+    ),
+  );
   const result = spawnSync(process.execPath, [cli, ...args], {
     cwd: root,
     encoding: "utf8",
-    env: { ...process.env, ...env },
+    env: { ...inherited, ...env },
   });
   return { code: result.status ?? 1, output: result.stdout + result.stderr };
 }
@@ -46,7 +54,7 @@ describe("command line", () => {
     expect(run(root, "check")).toMatchObject({ code: 1 });
     expect(run(root, "build")).toStrictEqual({
       code: 0,
-      output: "Built 1 item into public/r: 2 written, 0 deleted.\n",
+      output: `Built 1 item into ${path.join("public", "r")}: 2 written, 0 deleted.\n`,
     });
     expect(run(root, "check")).toStrictEqual({
       code: 0,
