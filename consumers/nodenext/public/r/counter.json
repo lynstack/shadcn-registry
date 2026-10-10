@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "files": [
+    {
+      "content": "import { formatCount } from \"#/lib/format.js\";\n\nexport function CounterLabel({ count }: { readonly count: number }) {\n  return <span>{formatCount(count)}</span>;\n}\n",
+      "path": "src/components/ui/counter/counter-label.tsx",
+      "target": "@ui/counter/counter-label.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "content": "import { useClickCount } from \"#/hooks/use-click-count.js\";\nimport { CounterLabel } from \"./counter-label.js\";\n\nexport function Counter() {\n  const [count, increment] = useClickCount();\n  return (\n    <button type=\"button\" onClick={increment}>\n      <CounterLabel count={count} />\n    </button>\n  );\n}\n",
+      "path": "src/components/ui/counter/counter.tsx",
+      "target": "@ui/counter/counter.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "name": "counter",
+  "registryDependencies": [
+    "@nodenext/click-count",
+    "@nodenext/format"
+  ],
+  "title": "Counter",
+  "type": "registry:ui"
+}

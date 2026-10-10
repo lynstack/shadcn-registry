@@ -1,0 +1,52 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "homepage": "https://example.com/nodenext",
+  "items": [
+    {
+      "files": [
+        {
+          "path": "src/hooks/use-click-count.ts",
+          "target": "@hooks/use-click-count.ts",
+          "type": "registry:hook"
+        }
+      ],
+      "name": "click-count",
+      "title": "Click Count",
+      "type": "registry:hook"
+    },
+    {
+      "files": [
+        {
+          "path": "src/components/ui/counter/counter-label.tsx",
+          "target": "@ui/counter/counter-label.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/counter/counter.tsx",
+          "target": "@ui/counter/counter.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "name": "counter",
+      "registryDependencies": [
+        "@nodenext/click-count",
+        "@nodenext/format"
+      ],
+      "title": "Counter",
+      "type": "registry:ui"
+    },
+    {
+      "files": [
+        {
+          "path": "src/lib/format.ts",
+          "target": "@lib/format.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "name": "format",
+      "title": "Format",
+      "type": "registry:lib"
+    }
+  ],
+  "name": "nodenext"
+}

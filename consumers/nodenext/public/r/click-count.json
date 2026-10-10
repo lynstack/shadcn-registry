@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "files": [
+    {
+      "content": "import { useState } from \"react\";\n\nexport function useClickCount(start = 0): readonly [number, () => void] {\n  const [count, setCount] = useState(start);\n  return [count, () => setCount((value) => value + 1)];\n}\n",
+      "path": "src/hooks/use-click-count.ts",
+      "target": "@hooks/use-click-count.ts",
+      "type": "registry:hook"
+    }
+  ],
+  "name": "click-count",
+  "title": "Click Count",
+  "type": "registry:hook"
+}

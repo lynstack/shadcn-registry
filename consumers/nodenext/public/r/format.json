@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "files": [
+    {
+      "content": "export function formatCount(count: number): string {\n  return new Intl.NumberFormat(\"en-US\", { notation: \"compact\" }).format(count);\n}\n",
+      "path": "src/lib/format.ts",
+      "target": "@lib/format.ts",
+      "type": "registry:lib"
+    }
+  ],
+  "name": "format",
+  "title": "Format",
+  "type": "registry:lib"
+}
