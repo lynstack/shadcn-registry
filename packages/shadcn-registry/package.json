@@ -1,6 +1,6 @@
 {
   "name": "@lynstack/shadcn-registry",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Builds a shadcn registry from the source of a TypeScript component library: items, files, dependencies and theme, read from the code itself.",
   "keywords": [
     "shadcn",
@@ -31,7 +31,8 @@
     "#test/*": "./test/*"
   },
   "files": [
-    "dist"
+    "dist",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "tsdown",
