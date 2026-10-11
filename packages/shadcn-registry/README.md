@@ -91,6 +91,8 @@ and those of every item it depends on through its imports or its rule's
 
 **Configuration**
 
+- a field that is missing, of the wrong type, or that the configuration
+  does not know, such as a misspelled `outdir`;
 - two items with one name, or a name that is not lowercase letters and
   digits joined by single hyphens;
 - an item `source` with backslashes, outside the root, without `{item}`

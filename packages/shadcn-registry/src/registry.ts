@@ -8,6 +8,7 @@ import { createDependencyReader } from "./dependencies.ts";
 import { itemsOf } from "./items.ts";
 import { outputFolderOf } from "./output.ts";
 import { registryFiles } from "./registry-json.ts";
+import { validateConfig } from "./config-schema.ts";
 
 /** A built registry: each file the output folder holds, by name. */
 interface BuiltRegistry {
@@ -68,10 +69,12 @@ function readText(root: string, file: string, problems: Problems): string {
  * Throws a `TypeError` when `package.json` holds no object, or one of its
  * dependency fields does not map names to ranges.
  *
- * @param config - The registry's configuration.
+ * @param value - The registry's configuration, checked against its
+ *   schema first.
  * @param root - The folder its paths start from: the package's own.
  */
-function buildRegistry(config: Config, root: string): BuiltRegistry {
+function buildRegistry(value: Config, root: string): BuiltRegistry {
+  const config = validateConfig(value);
   const texts = new Map<string, string>();
   const build: Build = {
     config,

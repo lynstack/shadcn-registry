@@ -53,53 +53,20 @@ function checkTailwindVersion(root: string, problems: Problems): void {
 }
 
 /**
- * Checks what the types of a configuration cannot: the shape of its
- * namespace and URL, and that each peer it installs is a peer.
+ * Checks what the configuration's schema cannot, as it needs the
+ * project: that each peer it installs is a peer.
  */
 function checkConfig(
   config: Config,
   dependencies: DependencyReader,
   problems: Problems,
 ): void {
-  checkAddresses(config, problems);
   for (const peer of config.installPeers ?? []) {
     if (!dependencies.peers.has(peer)) {
       problems.add({
         message: `installPeers names "${peer}", which package.json does not list in peerDependencies.`,
       });
     }
-  }
-}
-
-const namespacePattern = /^@[a-z0-9]+(?:-[a-z0-9]+)*$/u;
-
-const namespaceRule =
-  "must be @ and lowercase letters, digits and single hyphens, as the shadcn CLI names a registry";
-
-/**
- * Checks the shape of the namespace and the URL items name each other by.
- * Without a URL, a namespace that is not set comes from the name.
- */
-function checkAddresses(config: Config, problems: Problems): void {
-  const { name, namespace, url } = config;
-  if (namespace !== undefined && !namespacePattern.test(namespace)) {
-    problems.add({
-      message: `The namespace "${namespace}" ${namespaceRule}.`,
-    });
-  }
-  if (
-    namespace === undefined &&
-    url === undefined &&
-    !namespacePattern.test(`@${name}`)
-  ) {
-    problems.add({
-      message: `The name "${name}" makes the namespace "@${name}", which ${namespaceRule}; rename the registry, or set namespace.`,
-    });
-  }
-  if (url !== undefined && !/^https?:\/\/.*\{name\}/u.test(url)) {
-    problems.add({
-      message: `The url "${url}" must be an http or https URL with {name} where the item's name goes.`,
-    });
   }
 }
 

@@ -3,6 +3,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 import type { Config } from "./config.ts";
+import { validateConfig } from "./config-schema.ts";
 
 /** The configuration files a root may hold, in the order they are looked for. */
 const configNames: readonly string[] = [
@@ -29,8 +30,8 @@ function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
 /**
  * Loads the default export of a configuration file. Node.js strips the
  * types of a TypeScript file itself, so the file uses only erasable
- * syntax and imports with extensions. Throws when no file is found, or
- * when its default export lacks `name`, `homepage` or `items`.
+ * syntax and imports with extensions. Throws when no file is found, and
+ * a {@link RegistryError} when its default export is no configuration.
  *
  * @param cwd - The folder `file` starts from, and where one is looked for.
  * @param file - The file, or `undefined` for the first of
@@ -52,31 +53,11 @@ async function loadConfig(
     );
   }
   const loaded: unknown = await import(pathToFileURL(found).href);
-  const config = isRecord(loaded) ? loaded["default"] : undefined;
-  assertConfig(config, found);
+  const config = validateConfig(
+    isRecord(loaded) ? loaded["default"] : undefined,
+    path.basename(found),
+  );
   return { config, file: found, root: path.dirname(found) };
-}
-
-/**
- * Checks the fields a build cannot start without. A JavaScript
- * configuration has no types, and a TypeScript one is only stripped.
- */
-function assertConfig(value: unknown, file: string): asserts value is Config {
-  if (!isRecord(value)) {
-    throw new TypeError(
-      `${file} must export its configuration as the default export.`,
-    );
-  }
-  const missing = [
-    typeof value["name"] === "string" ? [] : ["name (a string)"],
-    typeof value["homepage"] === "string" ? [] : ["homepage (a string)"],
-    Array.isArray(value["items"]) ? [] : ["items (an array of rules)"],
-  ].flat();
-  if (missing.length > 0) {
-    throw new TypeError(
-      `${file}: the configuration needs ${missing.join(", ")}.`,
-    );
-  }
 }
 
 export { loadConfig };

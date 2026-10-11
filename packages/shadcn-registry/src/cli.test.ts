@@ -112,7 +112,7 @@ describe("command line", () => {
     });
 
     expect(run(root, "build").output).toContain(
-      "the configuration needs name (a string), homepage (a string), items (an array of rules).",
+      "shadcn-registry.config.js: The configuration needs homepage.\n  shadcn-registry.config.js: The configuration needs items.\n  shadcn-registry.config.js: The configuration's name must be string, not 1.",
     );
   });
 

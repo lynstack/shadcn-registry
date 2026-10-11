@@ -47,6 +47,7 @@
     "oxc-parser": "^0.153.0",
     "oxc-resolver": "^11.24.2",
     "postcss": "^8.5.29",
+    "valibot": "^1.5.0",
     "yaml": "^2.9.1"
   },
   "devDependencies": {

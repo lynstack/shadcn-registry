@@ -64,7 +64,12 @@ share a folder, and import the others by `#/`:
 - `output.ts`: writes a build into its folder, or compares it with one.
 - `problems.ts`, `registry-error.ts`: collect every problem of a build
   and throw them as one `RegistryError`.
-- `config-checks.ts`: checks what the configuration's types cannot.
+- `config-schema.ts`: the configuration's valibot schema, which every
+  build checks it against first: its fields, their types, and the shapes
+  of its namespace and URL. Annotated as `GenericSchema<Config>`, it
+  cannot accept what `Config` does not.
+- `config-checks.ts`: checks what the schema cannot, as they need the
+  project.
 - `order.ts`: sorts strings by code unit, the same under every locale.
 - `items.ts`: collects every item of a build, themes first.
 - `item-fields.ts`: an item's JSON fields, with the empty ones dropped
