@@ -1,5 +1,5 @@
 /**
- * Settings Provider: sets the density of every component below it.
+ * Sets the density of every component below it.
  *
  * @packageDocumentation
  */

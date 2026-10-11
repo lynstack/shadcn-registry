@@ -51,6 +51,9 @@
       "type": "registry:style"
     },
     {
+      "categories": [
+        "display"
+      ],
       "dependencies": [
         "@lynstack/class-recipe@^1.7.3"
       ],

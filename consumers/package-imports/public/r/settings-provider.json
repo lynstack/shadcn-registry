@@ -3,7 +3,7 @@
   "description": "Sets the density of every component below it.",
   "files": [
     {
-      "content": "/**\n * Settings Provider: sets the density of every component below it.\n *\n * @packageDocumentation\n */\n\nexport { SettingsProvider } from \"./settings-provider\";\nexport type { Settings } from \"#/lib/settings/settings-context\";\n",
+      "content": "/**\n * Sets the density of every component below it.\n *\n * @packageDocumentation\n */\n\nexport { SettingsProvider } from \"./settings-provider\";\nexport type { Settings } from \"#/lib/settings/settings-context\";\n",
       "path": "src/components/settings-provider/index.ts",
       "target": "@components/settings-provider/index.ts",
       "type": "registry:component"

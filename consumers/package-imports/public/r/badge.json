@@ -1,5 +1,8 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "categories": [
+    "display"
+  ],
   "dependencies": [
     "@lynstack/class-recipe@^1.7.3"
   ],
@@ -18,7 +21,7 @@
       "type": "registry:ui"
     },
     {
-      "content": "/**\n * Badge: shows a short status next to other content.\n *\n * @packageDocumentation\n */\n\nexport { Badge } from \"./badge\";\nexport type { BadgeTone } from \"./badge-variants\";\n",
+      "content": "/**\n * Shows a short status next to other content.\n *\n * @category display\n * @packageDocumentation\n */\n\nexport { Badge } from \"./badge\";\nexport type { BadgeTone } from \"./badge-variants\";\n",
       "path": "src/components/ui/badge/index.ts",
       "target": "@ui/badge/index.ts",
       "type": "registry:ui"

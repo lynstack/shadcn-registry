@@ -1,15 +1,4 @@
 import { defineConfig } from "@lynstack/shadcn-registry";
-import type { ItemDetails, ItemInfo } from "@lynstack/shadcn-registry";
-
-/** Title and description from an entry's `Name: what it does.` documentation. */
-function describe({ documentation }: ItemInfo): ItemDetails {
-  const match = /^(?<title>[\w ]+): (?<what>.+)$/u.exec(documentation ?? "");
-  const title = match?.groups?.["title"];
-  const what = match?.groups?.["what"];
-  return title === undefined || what === undefined
-    ? {}
-    : { description: `${what.charAt(0).toUpperCase()}${what.slice(1)}`, title };
-}
 
 export default defineConfig({
   name: "package-imports",
@@ -23,13 +12,11 @@ export default defineConfig({
       type: "registry:ui",
       target: "@ui",
       registryDependencies: ["style"],
-      describe,
     },
     {
       source: "src/components/{item}",
       type: "registry:component",
       target: "@components",
-      describe,
     },
     { source: "src/lib/{item}", type: "registry:lib", target: "@lib" },
   ],

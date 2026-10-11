@@ -45,6 +45,12 @@ share a folder, and import the others by `#/`:
   first maps `@/` and `#/` folders to aliases; the second looks an
   `import` statement up among the files one install writes) and refuses
   a local import that would name another module.
+- `documentation.ts`: reads an item's description and categories from
+  the file-level TSDoc comment of its entry with `@microsoft/tsdoc`,
+  never a regular expression, with the TypeDoc tags `@module`,
+  `@summary` and `@category` defined.
+- `item-info.ts`: what a rule's `describe` reads about an item: its
+  name, its files and the documentation of its entry.
 - `component-items.ts`: builds an item from its files' imports, then
   checks each local import against one install of its item.
 - `theme/`: the themes, entered through `theme.ts`, which merges a

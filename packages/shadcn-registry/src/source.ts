@@ -23,7 +23,6 @@ interface SourceImport {
 /** What the build reads from a script. */
 interface SourceModule {
   readonly imports: readonly SourceImport[];
-  readonly documentation: string | undefined;
 }
 
 /** The extensions of the ES modules the build reads the imports of. */
@@ -38,23 +37,6 @@ const scriptExtensions: ReadonlySet<string> = new Set([
 
 /** The extensions of CommonJS modules, which the build refuses. */
 const commonJsExtensions: ReadonlySet<string> = new Set([".cjs", ".cts"]);
-
-const documentationTag = "@packageDocumentation";
-
-function documentationOf(
-  comments: readonly { readonly type: string; readonly value: string }[],
-): string | undefined {
-  const comment = comments.find(
-    (candidate) =>
-      candidate.type === "Block" && candidate.value.includes(documentationTag),
-  );
-  return comment?.value
-    .split("\n")
-    .map((line) => line.replace(/^\s*\*\s?/u, "").trim())
-    .join(" ")
-    .split(documentationTag)[0]
-    ?.trim();
-}
 
 /** A string literal, or a template literal without substitutions, as written. */
 function literalValue(text: string): string | undefined {
@@ -177,8 +159,8 @@ function typeScriptImportsOf(
 }
 
 /**
- * Reads the imports and the documentation of a script. A dynamic import
- * of anything but a literal is a problem: no build can tell what it loads.
+ * Reads the imports of a script. A dynamic import of anything but a
+ * literal is a problem: no build can tell what it loads.
  */
 function readSource(
   file: string,
@@ -195,7 +177,6 @@ function readSource(
     });
   }
   return {
-    documentation: documentationOf(result.comments),
     imports: [
       ...staticImportsOf(script, result.module),
       ...reExportsOf(script, result.module),
@@ -206,8 +187,8 @@ function readSource(
 }
 
 /**
- * Reads a file's imports and documentation when it is an ES module, and
- * returns `undefined` for any other file. A CommonJS module is a problem.
+ * Reads a file's imports when it is an ES module, and returns
+ * `undefined` for any other file. A CommonJS module is a problem.
  */
 function readScript(
   file: string,
@@ -222,10 +203,13 @@ function readScript(
         "is a CommonJS module; the build reads ES modules only, so write it as an ES module (.js, .mjs, .jsx, .ts, .mts or .tsx).",
     });
   }
-  return scriptExtensions.has(extension)
-    ? readSource(file, text, problems)
-    : undefined;
+  return isScript(file) ? readSource(file, text, problems) : undefined;
 }
 
-export { readScript };
+/** Whether a file is an ES module the build reads. */
+function isScript(file: string): boolean {
+  return scriptExtensions.has(path.posix.extname(file));
+}
+
+export { isScript, readScript };
 export type { ImportForm, SourceImport, SourceModule };

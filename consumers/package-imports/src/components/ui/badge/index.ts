@@ -1,6 +1,7 @@
 /**
- * Badge: shows a short status next to other content.
+ * Shows a short status next to other content.
  *
+ * @category display
  * @packageDocumentation
  */
 

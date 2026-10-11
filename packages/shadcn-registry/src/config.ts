@@ -18,11 +18,13 @@ interface ItemInfo {
   /** Its files, from the root, with forward slashes, sorted. */
   readonly files: readonly string[];
   /**
-   * The text of the `@packageDocumentation` comment of its entry: the
-   * file itself for a one-file item, `index.*` for a folder. The lines
-   * are joined with spaces, and only the text before the tag is kept.
+   * The details the file-level TSDoc comment of its entry gives, which
+   * the item has unless `describe` replaces them. The entry is the file
+   * itself for a one-file item, `index.*` for a folder; its comment is
+   * the first doc comment that carries `@packageDocumentation` or
+   * `@module`.
    */
-  readonly documentation: string | undefined;
+  readonly documentation: Pick<ItemDetails, "categories" | "description">;
 }
 
 /** The fields of an item that the source cannot tell. */
@@ -71,7 +73,10 @@ interface ItemRule {
    * itself.
    */
   readonly registryDependencies?: readonly string[];
-  /** The details of each item, from what the source tells about it. */
+  /**
+   * The details of each item, from what the source tells about it. Each
+   * field it returns replaces the one the item's documentation gives.
+   */
   readonly describe?: (item: ItemInfo) => ItemDetails;
 }
 

@@ -6,7 +6,7 @@
   "description": "A button that shows the status of what it acts on.",
   "files": [
     {
-      "content": "/**\n * Status Button: a button that shows the status of what it acts on.\n *\n * @packageDocumentation\n */\n\nexport { StatusButton } from \"./status-button\";\n",
+      "content": "/**\n * A button that shows the status of what it acts on.\n *\n * @packageDocumentation\n */\n\nexport { StatusButton } from \"./status-button\";\n",
       "path": "src/components/ui/status-button/index.ts",
       "target": "@ui/status-button/index.ts",
       "type": "registry:ui"

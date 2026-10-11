@@ -1,16 +1,15 @@
-import path from "node:path";
-
-import type { Config, ItemInfo } from "./config.ts";
 import type { FoundItem, PlannedFile } from "./discover.ts";
 import type { ImportResolver, Resolved } from "./resolve.ts";
 import { compact, detailsOf } from "./item-fields.ts";
-import { placementProblem, stemOf } from "./placement.ts";
+import type { Config } from "./config.ts";
 import type { DependencyReader } from "./dependencies.ts";
 import type { InstalledFile } from "./placement.ts";
 import type { ItemFields } from "./item-fields.ts";
-import { Problems } from "./problems.ts";
+import type { Problems } from "./problems.ts";
 import type { SourceImport } from "./source.ts";
 import { createResolver } from "./resolve.ts";
+import { itemInfoOf } from "./item-info.ts";
+import { placementProblem } from "./placement.ts";
 import { readScript } from "./source.ts";
 import { sorted } from "./order.ts";
 
@@ -134,7 +133,8 @@ class ComponentItems {
         }),
       ]),
     );
-    const details = item.rule.describe?.(this.#infoOf(item)) ?? {};
+    const info = itemInfoOf(item, this.#context.textOf);
+    const details = { ...info.documentation, ...item.rule.describe?.(info) };
     return compact({
       ...detailsOf(details, item.name),
       dependencies: sorted(imports.dependencies),
@@ -184,29 +184,6 @@ class ComponentItems {
     return [...this.#files.values()]
       .filter((file) => items.has(file.owner))
       .map((file) => file.target);
-  }
-
-  #infoOf(item: FoundItem): ItemInfo {
-    const entry =
-      item.folder === undefined
-        ? item.files[0]
-        : item.files.find(
-            (file) =>
-              path.posix.dirname(file.path) === item.folder &&
-              stemOf(file.path) === "index",
-          );
-    return {
-      documentation:
-        entry === undefined
-          ? undefined
-          : readScript(
-              entry.path,
-              this.#context.textOf(entry.path),
-              new Problems(),
-            )?.documentation,
-      files: item.files.map((file) => file.path),
-      name: item.name,
-    };
   }
 
   /** The item of this registry that a rule's dependency names, by name or address. */

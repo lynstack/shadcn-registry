@@ -391,6 +391,9 @@ importers:
 
   packages/shadcn-registry:
     dependencies:
+      '@microsoft/tsdoc':
+        specifier: ^0.17.1
+        version: 0.17.1
       oxc-parser:
         specifier: ^0.153.0
         version: 0.153.0
@@ -664,6 +667,9 @@ packages:
 
   '@lynstack/recipe@1.9.0':
     resolution: {integrity: sha512-cUUtnHka3uKw2BsnXPXMe7I4HD5DuYkHpQTbTaVXCOvkgS1vF0UYZbrT+GcGIMayIIKFxs2GuWCX34+UfXXBQQ==}
+
+  '@microsoft/tsdoc@0.17.1':
+    resolution: {integrity: sha512-VHyYyyoH63jFoO3shpw9Zfijk5v/9p/VrClW35z0/q6ooK7sSmxpzOkS4iZPxs3vO4XtBW4H38HRAKkAMIK7DA==}
 
   '@modelcontextprotocol/sdk@1.32.1':
     resolution: {integrity: sha512-2DdE+SJDtzLEEWzY1ZjY7Q+VcPhcV1KisD3zI4u0XZyktsjHum1mwbMI+JaulUBi2OZk+KJAi2uPXzxichPkdw==}
@@ -3662,6 +3668,8 @@ snapshots:
       '@lynstack/recipe': 1.9.0
 
   '@lynstack/recipe@1.9.0': {}
+
+  '@microsoft/tsdoc@0.17.1': {}
 
   '@modelcontextprotocol/sdk@1.32.1(zod@3.25.76)':
     dependencies:

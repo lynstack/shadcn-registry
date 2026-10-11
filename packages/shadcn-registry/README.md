@@ -19,6 +19,26 @@ and line where it has one.
 - **Registry dependencies**: every other item the files import, named by
   `@namespace/name` or by URL, never by a bare name, which the CLI would
   look up in shadcn's own registry.
+- **Details**: an item's `description` and `categories` come from the
+  file-level TSDoc comment of its entry, the file itself for a one-file
+  item and `index.*` for a folder: the first doc comment that carries
+  `@packageDocumentation` (TSDoc) or `@module` (TypeDoc). The
+  description is its `@summary`, or else the first paragraph of its
+  summary; each `@category` adds a category, once. Tag names read in
+  any case. `{@link Button | a button}` reads as its text, code spans
+  keep their backticks, other inline tags and HTML tags are left out,
+  and a block tag, even one TSDoc does not define, ends the text. Other tags are API documentation and are ignored. The `title`
+  is the item's name in title case.
+
+  ```ts
+  /**
+   * Shows a short status next to other content.
+   *
+   * @category display
+   * @packageDocumentation
+   */
+  ```
+
 - **Themes**: `:root`, `.dark` and `@theme inline` become `cssVars`;
   every other rule and at-rule becomes `css`, merged as the CLI merges it
   into the app. `@source`, `@theme inline reference` and an `@import` or
@@ -153,8 +173,9 @@ export default defineConfig({
   beyond those its imports name: an item of this registry by its name,
   or another registry's item by its `@namespace/name` or URL.
 - `describe(item)` returns an item's `title`, `description`, `author`,
-  `docs`, `categories` and `meta`. It receives the item's files and the
-  `@packageDocumentation` comment of its entry file.
+  `docs`, `categories` and `meta`. It receives the item's name, its
+  files and the details its documentation gives, and each field it
+  returns replaces the one the documentation gives.
 - Items name each other `@<name>/<item>` by default; `namespace` changes
   the prefix, and `url`, such as `"https://acme.dev/r/{name}.json"`, names
   them by URL instead, which needs no `registries` entry in the app.

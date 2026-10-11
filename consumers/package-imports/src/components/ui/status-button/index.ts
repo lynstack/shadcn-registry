@@ -1,5 +1,5 @@
 /**
- * Status Button: a button that shows the status of what it acts on.
+ * A button that shows the status of what it acts on.
  *
  * @packageDocumentation
  */

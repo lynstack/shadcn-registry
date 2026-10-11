@@ -43,6 +43,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@microsoft/tsdoc": "^0.17.1",
     "oxc-parser": "^0.153.0",
     "oxc-resolver": "^11.24.2",
     "postcss": "^8.5.29",

@@ -2,7 +2,7 @@
   "name": "@consumers/package-imports",
   "version": "0.0.0",
   "private": true,
-  "description": "A library also published to npm: a folder per component, #/ imports declared in package.json imports and tsconfig paths, @packageDocumentation as item descriptions, a peer the app installs, items named by URL, a style with media-query tokens and a package @import.",
+  "description": "A library also published to npm: a folder per component, #/ imports declared in package.json imports and tsconfig paths, TSDoc comments as item descriptions and categories, a peer the app installs, items named by URL, a style with media-query tokens and a package @import.",
   "type": "module",
   "imports": {
     "#/*": "./src/*"

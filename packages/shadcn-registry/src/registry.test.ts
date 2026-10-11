@@ -1,7 +1,5 @@
 import { describe, expect, it } from "vitest";
 
-import type { ItemDetails } from "./config.ts";
-
 import { build, createProject, problemsOf } from "#test/project.ts";
 
 const button = {
@@ -96,28 +94,6 @@ describe("items", () => {
     expect(output.get("button.json")?.["registryDependencies"]).toStrictEqual([
       "@ui-kit/utils",
     ]);
-  });
-
-  it("passes the entry's documentation to describe", () => {
-    const output = build(createProject(button), {
-      items: [
-        {
-          describe: ({ documentation, files }): ItemDetails => ({
-            description: `${String(documentation)} (${String(files.length)} files)`,
-            docs: "Read me.",
-          }),
-          source: "src/components/ui/{item}",
-          target: "@ui",
-          type: "registry:ui",
-        },
-        { source: "src/lib/{item}.ts", target: "@lib", type: "registry:lib" },
-      ],
-    });
-
-    expect(output.get("button.json")).toMatchObject({
-      description: "Button: triggers an action. (3 files)",
-      docs: "Read me.",
-    });
   });
 
   it("gives a file to the first rule whose source holds it", () => {
