@@ -54,6 +54,25 @@ describe("configuration", () => {
     ]);
   });
 
+  it("refuses a name that makes no namespace, unless a namespace or a URL is set", () => {
+    const root = createProject({
+      "src/components/ui/badge/badge.tsx": "export const badge = 1;\n",
+    });
+
+    expect(problemsOf(root, { name: "Acme UI" })).toStrictEqual([
+      ` The name "Acme UI" makes the namespace "@Acme UI", which must be @ and lowercase letters, digits and single hyphens, as the shadcn CLI names a registry; rename the registry, or set namespace.`,
+    ]);
+    expect([
+      ...build(root, { name: "Acme UI", namespace: "@acme" }).keys(),
+    ]).toContain("badge.json");
+    expect([
+      ...build(root, {
+        name: "Acme UI",
+        url: "https://acme.dev/r/{name}.json",
+      }).keys(),
+    ]).toContain("badge.json");
+  });
+
   it.each<readonly [string, ItemRule["type"]]>([
     ["@ui", "registry:ui"],
     ["@components/forms", "registry:component"],

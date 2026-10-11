@@ -102,8 +102,10 @@ and those of every item it depends on through its imports or its rule's
   item of it;
 - a rule's `registryDependencies` entry that is a bare name but no item
   of this registry;
-- a `namespace` or `url` of the wrong shape, and an `installPeers` entry
-  that `package.json` does not list in `peerDependencies`;
+- a `namespace` or `url` of the wrong shape, or a `name` that makes a
+  namespace of the wrong shape when neither is set, and an
+  `installPeers` entry that `package.json` does not list in
+  `peerDependencies`;
 - a library that has Tailwind CSS older than 4 installed;
 - an item, or `registry.json`, that the `shadcn/schema` of the installed
   CLI does not accept.
