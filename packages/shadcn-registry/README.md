@@ -68,8 +68,9 @@ and those of every item it depends on through its imports or its rule's
   linked, or a `file:`, `link:`, `git:`, `git+…:`, `github:`, `http:`,
   `https:` or `portal:` range;
 - a relative import that would point elsewhere once installed;
-- an alias import the CLI would leave as it is (in a `registry:file`, a
-  JavaScript, `.mts` or `.d.ts` file) or resolve to another module, and
+- an alias import in a `registry:file`, a JavaScript, `.mts` or `.d.ts`
+  file, whose aliases the CLI does not map, or one it would resolve to
+  another module, and
   a local import that is neither relative nor `@/` or `#/`;
 - an `import()` whose module name is computed;
 - CommonJS, whose imports the build cannot follow: a `.cjs` or `.cts`

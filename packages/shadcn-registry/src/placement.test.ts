@@ -76,7 +76,7 @@ describe("alias imports", () => {
       },
     ],
   ] as const)(
-    "refuses one in %s, whose imports the CLI copies as they are",
+    "refuses one in %s, whose aliases the CLI does not map",
     (file, config) => {
       const root = createProject({
         [file]: `import { size } from "@/lib/size";\nexport const badge = size;\n`,
@@ -84,7 +84,7 @@ describe("alias imports", () => {
       });
 
       expect(problemsOf(root, config)).toStrictEqual([
-        `${file}:1 "@/lib/size" is an alias import in a file whose imports the shadcn CLI copies as they are (a registry:file, JavaScript, .mts or .d.ts); use a relative path.`,
+        `${file}:1 "@/lib/size" is an alias import in a file whose aliases the shadcn CLI does not map (a registry:file, JavaScript, .mts or .d.ts), so it resolves only through the app's own aliases; use a relative path.`,
       ]);
     },
   );

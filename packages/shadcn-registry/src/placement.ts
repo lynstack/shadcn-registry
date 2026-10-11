@@ -7,13 +7,16 @@ import { isRelative } from "./resolve.ts";
  * The shadcn CLI copies a file's text, then rewrites its imports for the
  * app in two passes. The first maps an `@/` or `#/` specifier by its first
  * folders (`@/components/ui/x` to the ui alias), in a `.ts` or `.tsx` file
- * that is not a declaration file. The second looks the module of an
+ * that is not a declaration file nor a `registry:file`. The second, in a
+ * `.ts`, `.tsx`, `.js` or `.jsx` file of any type, looks the module of an
  * `import` statement up among the files the install writes: the exact
  * path, its `index` and any file of the same name all count, ranked by
  * extension (`.tsx`, `.ts`, `.js`, `.jsx`, then `.css`), then those under
- * the path first. It never rewrites a relative import, nor any import of
- * a `registry:file`. These checks replay both passes on each local import
- * and refuse one that would name another module. The CLI's lookup also
+ * the path first. It never rewrites a relative import. In a file the
+ * first pass skips, the second finds an alias import only through the
+ * app's own tsconfig or alias prefix, which the library cannot know, so
+ * the checks refuse it. These checks replay both passes on each local
+ * import and refuse one that would name another module. The CLI's lookup also
  * counts files the app already has; the checks count only those the
  * install writes, as into a new app.
  */
@@ -145,7 +148,7 @@ function unrewrittenProblem(local: LocalImport): string | undefined {
   }
   return isRewritten(local.from)
     ? undefined
-    : `"${specifier}" is an alias import in a file whose imports the shadcn CLI copies as they are (a registry:file, JavaScript, .mts or .d.ts); use a relative path.`;
+    : `"${specifier}" is an alias import in a file whose aliases the shadcn CLI does not map (a registry:file, JavaScript, .mts or .d.ts), so it resolves only through the app's own aliases; use a relative path.`;
 }
 
 /** Why an alias import would name another module once installed. */
