@@ -136,10 +136,16 @@ interface Config {
   readonly tsconfig?: string;
   /**
    * Where `registry.json` and each item's `<name>.json` are written.
-   * `public/r` by default. The folder belongs to the build: other JSON
-   * files in it are deleted.
+   * `public/r` by default. The JSON files in it that the build does not
+   * write are deleted: see `emptyOutDir`.
    */
   readonly outDir?: string;
+  /**
+   * Whether the build deletes the JSON files in `outDir` that it does not
+   * write, as Vite empties its `outDir`. `true` by default; `false` keeps
+   * them.
+   */
+  readonly emptyOutDir?: boolean;
   /**
    * The rules that turn the source into component items. A file goes to
    * the first rule whose source holds it.
@@ -163,12 +169,15 @@ interface Config {
   readonly ignore?: readonly string[];
 }
 
+/** Where the output goes when `outDir` is not set. */
+const defaultOutDir = "public/r";
+
 /** Gives a configuration its type. */
 function defineConfig(config: Config): Config {
   return config;
 }
 
-export { defineConfig };
+export { defaultOutDir, defineConfig };
 export type {
   Config,
   ItemDetails,

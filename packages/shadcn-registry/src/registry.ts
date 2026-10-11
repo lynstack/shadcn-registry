@@ -6,12 +6,18 @@ import type { Config } from "./config.ts";
 import { Problems } from "./problems.ts";
 import { createDependencyReader } from "./dependencies.ts";
 import { itemsOf } from "./items.ts";
+import { outputFolderOf } from "./output.ts";
 import { registryFiles } from "./registry-json.ts";
 
 /** A built registry: each file the output folder holds, by name. */
 interface BuiltRegistry {
   /** The output folder, absolute. */
   readonly outDir: string;
+  /**
+   * Whether a write deletes the JSON files of the output folder that the
+   * build does not write: `emptyOutDir`, `true` by default.
+   */
+  readonly emptyOutDir: boolean;
   /** `registry.json` and `<item>.json`, each as the JSON text to write. */
   readonly files: ReadonlyMap<string, string>;
 }
@@ -80,7 +86,7 @@ function buildRegistry(config: Config, root: string): BuiltRegistry {
   };
   const files = registryFiles(config, itemsOf(build), build);
   build.problems.throwIfAny();
-  return { files, outDir: path.resolve(root, config.outDir ?? "public/r") };
+  return { files, ...outputFolderOf(config, root) };
 }
 
 export { buildRegistry };

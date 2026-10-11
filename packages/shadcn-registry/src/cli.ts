@@ -4,7 +4,12 @@ import path from "node:path";
 import { watch } from "node:fs";
 
 import { InstallTestError, testRegistry } from "./install-test/install-test.ts";
-import { compareOutput, writeOutput } from "./output.ts";
+import {
+  compareOutput,
+  isInside,
+  outputFolderOf,
+  writeOutput,
+} from "./output.ts";
 import type { LoadedConfig } from "./load-config.ts";
 import { RegistryError } from "./registry-error.ts";
 import { buildRegistry } from "./registry.ts";
@@ -27,8 +32,18 @@ Options:
 
 const rebuildDelayMs = 100;
 
+/** Warns, as Vite does, about an outDir that holds the root. */
+function warnAboutOutDir(loaded: LoadedConfig, outDir: string): void {
+  if (outDir === loaded.root || isInside(outDir, loaded.root)) {
+    process.stderr.write(
+      "outDir must not be the root or a folder above it, as the build could overwrite the library's files with its output.\n",
+    );
+  }
+}
+
 function build(loaded: LoadedConfig): void {
   const registry = buildRegistry(loaded.config, loaded.root);
+  warnAboutOutDir(loaded, registry.outDir);
   const { changed, stale } = writeOutput(registry);
   const relative = path.relative(process.cwd(), registry.outDir) || ".";
   const items = registry.files.size - 1;
@@ -57,7 +72,7 @@ function check(loaded: LoadedConfig): boolean {
 
 /** Builds whenever a file under the root changes, outside the output folder. */
 function watchRoot(loaded: LoadedConfig): void {
-  const outDir = path.resolve(loaded.root, loaded.config.outDir ?? "public/r");
+  const { outDir } = outputFolderOf(loaded.config, loaded.root);
   const ignored = (file: string): boolean => {
     const absolute = path.resolve(loaded.root, file);
     return (

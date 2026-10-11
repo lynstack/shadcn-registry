@@ -62,6 +62,21 @@ describe("command line", () => {
     });
   });
 
+  it("warns about an outDir that is the root", () => {
+    const root = createProject({
+      ...badge,
+      "shadcn-registry.config.js": config.replace(
+        "items:",
+        'outDir: ".",\n  emptyOutDir: false,\n  items:',
+      ),
+    });
+
+    expect(run(root, "build")).toStrictEqual({
+      code: 0,
+      output: `Built 1 item into .: 2 written, 0 deleted.\noutDir must not be the root or a folder above it, as the build could overwrite the library's files with its output.\n`,
+    });
+  });
+
   it("orders items the same under any locale", () => {
     const root = createProject({
       "shadcn-registry.config.js": config,

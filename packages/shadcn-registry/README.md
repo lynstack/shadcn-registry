@@ -192,8 +192,11 @@ export default defineConfig({
 - `ignore` lists the files that never ship, as globs from the root.
   Tests, specs, type tests, stories and snapshots are ignored by default;
   setting `ignore` replaces that list.
-- `outDir`, `public/r` by default, belongs to the build: other JSON files
-  in it are deleted.
+- `outDir`, `public/r` by default, is where the build writes. As Vite
+  empties its `outDir`, the build deletes the JSON files in it that it
+  does not write; `emptyOutDir: false` keeps them. An `outDir` that is
+  the root or a folder above it draws a warning: emptied, it loses
+  `package.json`.
 - `test.dependencies` adds packages to the app of `shadcn-registry test`.
 
 ## Run
