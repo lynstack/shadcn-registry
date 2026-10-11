@@ -5,6 +5,16 @@ format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the package follows [Semantic Versioning](https://semver.org/): until
 1.0, a minor version may break the configuration or the API.
 
+## [Unreleased]
+
+### Changed
+
+- `shadcn-registry test` sets its app up as a user would: the app is a
+  Vite app, and the shadcn CLI writes its `components.json` with
+  `registry add` and `init`, from the first theme whose `extends` is
+  `none` or else shadcn's default style, before `add` installs the other
+  items over what `init` wrote.
+
 ## [0.2.0] - 2026-10-11
 
 ### Added
@@ -55,5 +65,6 @@ The first release.
   `InstallTestError`.
 - Output that is byte-identical for the same input on every platform.
 
+[Unreleased]: https://github.com/lynstack/shadcn-registry/compare/shadcn-registry@0.2.0...HEAD
 [0.2.0]: https://github.com/lynstack/shadcn-registry/releases/tag/shadcn-registry@0.2.0
 [0.1.0]: https://github.com/lynstack/shadcn-registry/releases/tag/v0.1.0

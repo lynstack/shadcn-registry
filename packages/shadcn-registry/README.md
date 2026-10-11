@@ -209,11 +209,15 @@ file; by default it is the first of `shadcn-registry.config.ts`, `.mts`,
 `node_modules` and `.git`, and reads the configuration once: restart it
 after changing the configuration.
 
-`test` builds the registry onto a local server and writes a React app
+`test` builds the registry onto a local server and writes a Vite app
 with React, TypeScript and Tailwind CSS at the versions the library has
 installed (the latest of any it lacks), and the library's peer
 dependencies. It installs the app with the package manager that runs the
-script, and adds every item with the shadcn CLI. Then the app must
+script, then sets it up with the shadcn CLI as a user would: `registry
+add` names the registry's namespace, `init` installs the first theme
+whose `extends` is `none`, or shadcn's default style (the `nova` preset
+on Base UI) when there is none, and `add` installs every other item,
+replacing any file `init` wrote at the same path. Then the app must
 typecheck, its Tailwind CSS must compile, and its stylesheet must hold
 every token of the themes. Run it from a `package.json` script.
 

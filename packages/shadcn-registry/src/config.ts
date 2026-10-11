@@ -105,7 +105,7 @@ interface ThemeItem extends ItemDetails {
 /** How `shadcn-registry test` builds the app it installs the items into. */
 interface TestOptions {
   /**
-   * More packages for the app, by name and range, beyond React,
+   * More packages for the app, by name and range, beyond Vite, React,
    * TypeScript, Tailwind CSS and the library's peer dependencies. An
    * entry that names one of those sets its range instead.
    */

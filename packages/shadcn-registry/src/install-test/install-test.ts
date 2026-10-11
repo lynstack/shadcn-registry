@@ -19,6 +19,7 @@ import { buildRegistry } from "#/registry.ts";
 interface ListedItem {
   readonly name: string;
   readonly type: string;
+  readonly extends?: string;
   readonly registryDependencies?: readonly string[];
   readonly cssVars?: {
     readonly light?: Readonly<Record<string, string>>;
@@ -83,28 +84,81 @@ function missingTokens(appDir: string, items: readonly ListedItem[]): string[] {
   });
 }
 
-/** Adds every item with the shadcn CLI, the themes that no other item brings last. */
-async function addItems(
-  appDir: string,
-  items: readonly ListedItem[],
-  addressOf: (name: string) => string,
-): Promise<void> {
-  const shadcn = fileURLToPath(import.meta.resolve("shadcn"));
-  const isTheme = (item: ListedItem): boolean =>
-    item.type === "registry:style" || item.type === "registry:theme";
+/** The registry as the local server serves it, and how the app names its items. */
+interface ServedRegistry {
+  readonly addressOf: (name: string) => string;
+  readonly items: readonly ListedItem[];
+  /** The registry's URL by namespace, or none when items name each other by URL. */
+  readonly registries: Record<string, string>;
+}
+
+/** The shadcn CLI the library has installed, its peer dependency. */
+function shadcnBin(): string {
+  return fileURLToPath(import.meta.resolve("shadcn"));
+}
+
+/** Whether an item is a theme, which `shadcn add` merges into the app's stylesheet. */
+function isTheme(item: ListedItem): boolean {
+  return item.type === "registry:style" || item.type === "registry:theme";
+}
+
+/** The theme that `shadcn init` installs instead of shadcn's own style, if any. */
+function baseThemeOf(items: readonly ListedItem[]): ListedItem | undefined {
+  return items.find((item) => isTheme(item) && item.extends === "none");
+}
+
+/**
+ * The preset and component library that `shadcn init --defaults` picks,
+ * without the Next.js template it also picks.
+ */
+const defaultStyle: readonly string[] = ["--preset", "nova", "--base", "base"];
+
+/**
+ * Sets the app up as a user would before adding items: names the
+ * registry's namespace with `shadcn registry add`, then runs `shadcn
+ * init` with the theme that replaces shadcn's own style, or with
+ * shadcn's default style when there is none.
+ */
+async function initApp(appDir: string, served: ServedRegistry): Promise<void> {
+  const namespaces = Object.entries(served.registries);
+  if (namespaces.length > 0) {
+    await runNode(appDir, shadcnBin(), [
+      "registry",
+      "add",
+      ...namespaces.map(([namespace, url]) => `${namespace}=${url}`),
+    ]);
+  }
+  const base = baseThemeOf(served.items);
+  await runNode(appDir, shadcnBin(), [
+    "init",
+    ...(base === undefined ? defaultStyle : [served.addressOf(base.name)]),
+  ]);
+}
+
+/**
+ * Adds with the shadcn CLI every item but the theme `shadcn init`
+ * installed, the themes that no other item brings last. An item's file
+ * replaces the one `shadcn init` wrote at its path, such as
+ * `lib/utils.ts`, as a user answers the CLI's prompt to overwrite it.
+ */
+async function addItems(appDir: string, served: ServedRegistry): Promise<void> {
+  const { addressOf, items } = served;
+  const base = baseThemeOf(items);
   const required = new Set(
     items.flatMap((item) => item.registryDependencies ?? []),
   );
   const components = items.filter((item) => !isTheme(item));
   const themes = items.filter(
-    (item) => isTheme(item) && !required.has(addressOf(item.name)),
+    (item) =>
+      isTheme(item) && item !== base && !required.has(addressOf(item.name)),
   );
   const add = async (group: readonly ListedItem[]): Promise<void> => {
     if (group.length > 0) {
-      await runNode(appDir, shadcn, [
+      await runNode(appDir, shadcnBin(), [
         "add",
         ...group.map((item) => addressOf(item.name)),
         "--yes",
+        "--overwrite",
       ]);
     }
   };
@@ -130,13 +184,6 @@ async function checkApp(
       `The app's stylesheet lacks these tokens:\n${missing.join("\n")}`,
     );
   }
-}
-
-/** The registry as the local server serves it, and how the app names its items. */
-interface ServedRegistry {
-  readonly addressOf: (name: string) => string;
-  readonly items: readonly ListedItem[];
-  readonly registries: Record<string, string>;
 }
 
 /** Builds the registry onto the local server at `url`, into `files`. */
@@ -179,22 +226,23 @@ async function installAndCheck(
   writeTestApp({
     appDir,
     extra: loaded.config.test?.dependencies ?? {},
-    registries: served.registries,
     root: loaded.root,
   });
   await runPackageManager(packageManager, appDir, ["install"]);
-  await addItems(appDir, served.items, served.addressOf);
+  await initApp(appDir, served);
+  await addItems(appDir, served);
   await checkApp(appDir, served.items);
 }
 
 /**
- * Installs every item of the registry into a new React app with the
- * shadcn CLI, as a user would, from a local server. Then the app must
- * typecheck, its Tailwind CSS must compile, and its stylesheet must hold
- * every token of the themes. A registry that does not build throws its
- * `RegistryError`, and a run outside a package.json script an
- * `InstallTestError`, before any app is written; an app that fails is
- * kept, and its folder named in the error.
+ * Installs every item of the registry into a new Vite app with the
+ * shadcn CLI, as a user would, from a local server: `shadcn init`, with
+ * the theme whose `extends` is `none` if there is one, then `shadcn add`
+ * for the rest. Then the app must typecheck, its Tailwind CSS must
+ * compile, and its stylesheet must hold every token of the themes. A
+ * registry that does not build throws its `RegistryError`, and a run
+ * outside a package.json script an `InstallTestError`, before any app is
+ * written; an app that fails is kept, and its folder named in the error.
  *
  * @param loaded - The configuration and the folder it was loaded from.
  */

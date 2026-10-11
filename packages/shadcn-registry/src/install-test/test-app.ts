@@ -15,21 +15,22 @@ interface TestApp {
   readonly root: string;
   /** Where the app goes. */
   readonly appDir: string;
-  /** The `registries` entry of `components.json`, or none when items name each other by URL. */
-  readonly registries: Readonly<Record<string, string>>;
   /** More packages for the app, by name and range. */
   readonly extra: Readonly<Record<string, string>>;
 }
 
-/** The packages every test app has: React, TypeScript and Tailwind CSS v4. */
+/** The packages every test app has: Vite, React, TypeScript and Tailwind CSS v4. */
 const appPackages: readonly string[] = [
   "@tailwindcss/cli",
+  "@tailwindcss/vite",
   "@types/react",
   "@types/react-dom",
+  "@vitejs/plugin-react",
   "react",
   "react-dom",
   "tailwindcss",
   "typescript",
+  "vite",
 ];
 
 /** The settings of the library's pnpm workspace an install needs: its build and release-age policy. */
@@ -95,34 +96,18 @@ const tsconfig = {
     target: "es2022",
     types: [],
   },
-  include: ["src"],
+  include: ["src", "vite.config.ts"],
 };
 
-/** The shadcn configuration, with its default aliases. */
-function componentsJsonOf(app: TestApp): Record<string, unknown> {
-  return {
-    $schema: "https://ui.shadcn.com/schema.json",
-    aliases: {
-      components: "@/components",
-      hooks: "@/hooks",
-      lib: "@/lib",
-      ui: "@/components/ui",
-      utils: "@/lib/utils",
-    },
-    registries: app.registries,
-    rsc: true,
-    style: "new-york",
-    tailwind: {
-      baseColor: "neutral",
-      config: "",
-      css: "src/index.css",
-      cssVariables: true,
-    },
-    tsx: true,
-  };
-}
+/** The Vite configuration, whose file is how the shadcn CLI recognizes a Vite app. */
+const viteConfig = `import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
 
-/** Writes a new React app with TypeScript, Tailwind CSS v4 and shadcn's configuration. */
+export default defineConfig({ plugins: [react(), tailwindcss()] });
+`;
+
+/** Writes a new Vite app with React, TypeScript and Tailwind CSS v4, for `shadcn init`. */
 function writeTestApp(app: TestApp): void {
   const { appDir } = app;
   writeJson(path.join(appDir, "package.json"), {
@@ -132,7 +117,7 @@ function writeTestApp(app: TestApp): void {
     type: "module",
   });
   writeJson(path.join(appDir, "tsconfig.json"), tsconfig);
-  writeJson(path.join(appDir, "components.json"), componentsJsonOf(app));
+  writeFileSync(path.join(appDir, "vite.config.ts"), viteConfig);
   writeFileSync(
     path.join(appDir, "pnpm-workspace.yaml"),
     stringifyYaml(policyOf(app.root)),
