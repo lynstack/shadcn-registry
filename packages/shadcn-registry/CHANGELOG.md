@@ -5,6 +5,24 @@ format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the package follows [Semantic Versioning](https://semver.org/): until
 1.0, a minor version may break the configuration or the API.
 
+## [0.2.0] - 2026-10-11
+
+### Added
+
+- Each item's `description` and `categories` come from the file-level
+  TSDoc comment of its entry, with no `describe`: the first doc comment
+  that carries `@packageDocumentation` or `@module`, its `@summary` or
+  the first paragraph of its summary, and each `@category`. An item of
+  0.1.0 whose entry has such a comment gains them in its output.
+
+### Changed
+
+- **Breaking:** `ItemInfo.documentation` holds the `description` and
+  `categories` the comment gives instead of its raw text, the text
+  before `@packageDocumentation` with any block before the tag and raw
+  `{@link}` tags in it. Each field `describe` returns replaces the one
+  the comment gives.
+
 ## [0.1.0] - 2026-10-10
 
 The first release.
@@ -37,4 +55,5 @@ The first release.
   `InstallTestError`.
 - Output that is byte-identical for the same input on every platform.
 
+[0.2.0]: https://github.com/lynstack/shadcn-registry/releases/tag/shadcn-registry@0.2.0
 [0.1.0]: https://github.com/lynstack/shadcn-registry/releases/tag/v0.1.0
