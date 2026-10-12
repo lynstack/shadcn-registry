@@ -5,7 +5,7 @@ format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the package follows [Semantic Versioning](https://semver.org/): until
 1.0, a minor version may break the configuration or the API.
 
-## [Unreleased]
+## [0.3.0] - 2026-10-12
 
 ### Added
 
@@ -101,6 +101,6 @@ The first release.
   `InstallTestError`.
 - Output that is byte-identical for the same input on every platform.
 
-[Unreleased]: https://github.com/lynstack/shadcn-registry/compare/shadcn-registry@0.2.0...HEAD
+[0.3.0]: https://github.com/lynstack/shadcn-registry/releases/tag/shadcn-registry@0.3.0
 [0.2.0]: https://github.com/lynstack/shadcn-registry/releases/tag/shadcn-registry@0.2.0
 [0.1.0]: https://github.com/lynstack/shadcn-registry/releases/tag/v0.1.0
