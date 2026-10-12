@@ -16,7 +16,6 @@
   },
   "devDependencies": {
     "@lynstack/shadcn-registry": "workspace:*",
-    "@tailwindcss/cli": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "oxlint": "catalog:",

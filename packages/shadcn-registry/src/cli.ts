@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { inspect, parseArgs } from "node:util";
+import type { ParseArgsOptionsConfig } from "node:util";
 import path from "node:path";
 import { watch } from "node:fs";
 
@@ -12,23 +13,29 @@ import {
 } from "./output.ts";
 import type { LoadedConfig } from "./load-config.ts";
 import { RegistryError } from "./registry-error.ts";
+import type { TestTemplate } from "./config.ts";
 import { buildRegistry } from "./registry.ts";
 import { loadConfig } from "./load-config.ts";
+import { testTemplates } from "./config.ts";
 
-const usage = `Usage: shadcn-registry <command> [--config <file>]
+const usage = `Usage: shadcn-registry <command> [--config <file>] [--template <name>]
 
 Commands:
   build   Build the registry into its output folder.
   check   Fail when the output folder differs from a fresh build.
   watch   Build, then build again whenever a file under the root changes.
-  test    Install every item into a new app with the shadcn CLI, then
-          typecheck it, compile its Tailwind CSS and compare its tokens.
-          Needs the network; run it from a package.json script.
+  test    Install every item into a new app from each template with the
+          shadcn CLI, then build and typecheck it and compare its tokens.
+          Needs the network and git; run it from a package.json script.
 
 Options:
-  -c, --config <file>  The configuration file; by default the first of
-                       shadcn-registry.config.{ts,mts,js,mjs}.
-  -h, --help           Show this help.`;
+  -c, --config <file>    The configuration file; by default the first of
+                         shadcn-registry.config.{ts,mts,js,mjs}.
+  -t, --template <name>  For test, a template of shadcn init to start an
+                         app from: ${testTemplates.join(", ")}. Repeat it
+                         for more; it replaces test.templates, which is
+                         vite by default.
+  -h, --help             Show this help.`;
 
 const rebuildDelayMs = 100;
 
@@ -104,18 +111,31 @@ function watchRoot(loaded: LoadedConfig): void {
   );
 }
 
+/** What a command reads from the command line beyond the configuration. */
+interface CommandOptions {
+  readonly templates?: readonly TestTemplate[];
+}
+
 /** Each command, by name: it runs, then tells whether it succeeded. */
 const commands: Readonly<
-  Record<string, (loaded: LoadedConfig) => Promise<boolean> | boolean>
+  Record<
+    string,
+    (
+      loaded: LoadedConfig,
+      options: CommandOptions,
+    ) => Promise<boolean> | boolean
+  >
 > = {
   build: (loaded) => {
     build(loaded);
     return true;
   },
   check,
-  test: async (loaded) => {
-    await testRegistry(loaded);
-    process.stdout.write("Every item installed, typechecked and compiled.\n");
+  test: async (loaded, options) => {
+    await testRegistry(loaded, options);
+    process.stdout.write(
+      "Every item installed, built and typechecked in each app.\n",
+    );
     return true;
   },
   watch: (loaded) => {
@@ -124,14 +144,46 @@ const commands: Readonly<
   },
 };
 
+/** A mistake in the command line, printed with the usage. */
+class UsageError extends Error {
+  public override readonly name = "UsageError";
+}
+
+function isTestTemplate(name: string): name is TestTemplate {
+  return testTemplates.some((template) => template === name);
+}
+
+/** The templates `--template` names for `command`, if it is given. */
+function templatesOf(
+  command: string | undefined,
+  names: readonly string[] | undefined,
+): readonly TestTemplate[] | undefined {
+  if (names !== undefined && command !== "test") {
+    throw new UsageError("--template applies to test alone.");
+  }
+  const unknown = names?.find((name) => !isTestTemplate(name));
+  if (unknown !== undefined) {
+    throw new UsageError(
+      `Unknown template "${unknown}"; use ${testTemplates.join(", ")}.`,
+    );
+  }
+  return names?.filter((name) => isTestTemplate(name));
+}
+
+const options = {
+  config: { short: "c", type: "string" },
+  help: { short: "h", type: "boolean" },
+  template: { multiple: true, short: "t", type: "string" },
+} as const satisfies ParseArgsOptionsConfig;
+
+function readCommandLine(): ReturnType<
+  typeof parseArgs<{ allowPositionals: true; options: typeof options }>
+> {
+  return parseArgs({ allowPositionals: true, options });
+}
+
 async function main(): Promise<number> {
-  const { positionals, values } = parseArgs({
-    allowPositionals: true,
-    options: {
-      config: { short: "c", type: "string" },
-      help: { short: "h", type: "boolean" },
-    },
-  });
+  const { positionals, values } = readCommandLine();
   const [name] = positionals;
   const command = name === undefined ? undefined : commands[name];
   if (values.help === true || command === undefined) {
@@ -141,8 +193,11 @@ async function main(): Promise<number> {
     );
     return values.help === true ? 0 : 1;
   }
+  const templates = templatesOf(name, values.template);
   const loaded = await loadConfig(process.cwd(), values.config);
-  return (await command(loaded)) ? 0 : 1;
+  return (await command(loaded, templates === undefined ? {} : { templates }))
+    ? 0
+    : 1;
 }
 
 /** A problem report, a test failure or a usage mistake as it is, and any other error with its stack and causes. */
@@ -151,9 +206,10 @@ function describeError(error: unknown): string {
     return error.message;
   }
   if (
-    error instanceof TypeError &&
-    "code" in error &&
-    String(error.code).startsWith("ERR_PARSE_ARGS_")
+    error instanceof UsageError ||
+    (error instanceof TypeError &&
+      "code" in error &&
+      String(error.code).startsWith("ERR_PARSE_ARGS_"))
   ) {
     return `${error.message}\n${usage}`;
   }

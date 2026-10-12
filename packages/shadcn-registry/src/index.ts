@@ -18,11 +18,13 @@ export type {
   ItemRule,
   ItemType,
   TestOptions,
+  TestTemplate,
   ThemeItem,
   ThemeType,
 } from "./config.ts";
 export { loadConfig } from "./load-config.ts";
 export { InstallTestError, testRegistry } from "./install-test/install-test.ts";
+export type { TestRegistryOptions } from "./install-test/install-test.ts";
 export type { LoadedConfig } from "./load-config.ts";
 export { RegistryError } from "./registry-error.ts";
 export type { Problem } from "./registry-error.ts";

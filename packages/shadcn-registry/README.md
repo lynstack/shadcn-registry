@@ -200,7 +200,11 @@ export default defineConfig({
   does not write; `emptyOutDir: false` keeps them. An `outDir` that is
   the root or a folder above it draws a warning: emptied, it loses
   `package.json`.
-- `test.dependencies` adds packages to the app of `shadcn-registry test`.
+- `test.templates` names the templates of `shadcn init --template` that
+  `shadcn-registry test` starts an app from, one app each: `astro`,
+  `next`, `react-router`, `start` or `vite`, which is the default.
+  `laravel` is not one, as the shadcn CLI needs an app from `laravel new`.
+  `test.dependencies` adds packages to each app.
 
 ## Run
 
@@ -208,7 +212,7 @@ export default defineConfig({
 shadcn-registry build   # write registry.json and <item>.json into outDir
 shadcn-registry check   # fail when outDir differs from a fresh build (for CI)
 shadcn-registry watch   # build again whenever a file under the root changes
-shadcn-registry test    # install every item into a new app (needs the network)
+shadcn-registry test    # install every item into a new app per template (needs the network and git)
 ```
 
 Each command takes `--config <file>` (`-c`) to name the configuration
@@ -217,23 +221,30 @@ file; by default it is the first of `shadcn-registry.config.ts`, `.mts`,
 `node_modules` and `.git`, and reads the configuration once: restart it
 after changing the configuration.
 
-`test` builds the registry onto a local server and writes a Vite app
-with React, TypeScript and Tailwind CSS at the versions the library has
-installed (the latest of any it lacks), and the library's peer
-dependencies. It installs the app with the package manager that runs the
-script, then sets it up with the shadcn CLI as a user would: `registry
-add` names the registry's namespace, `init` installs the first theme
-whose `extends` is `none`, or shadcn's default style (the `nova` preset
-on Base UI) when there is none, and `add` installs every other item,
-replacing any file `init` wrote at the same path. Then the app must
-typecheck, its Tailwind CSS must compile, and its stylesheet must hold
-every token of the themes. Run it from a `package.json` script.
+`test` builds the registry onto a local server, then tests each template
+of `test.templates` in turn, or of `--template` (`-t`), which replaces
+them and may be repeated: `shadcn-registry test -t vite -t next`. A
+template named twice is tested once. For
+each, it sets an app up with the shadcn CLI as a user would: `init
+--template` creates the app with shadcn's default style (the `nova`
+preset on Base UI) and installs it with the package manager that runs the
+script, `registry add` names the registry's namespace, `init` installs
+the first theme whose `extends` is `none` in place of shadcn's style, and
+`add` installs every other item, replacing any file `init` wrote at the
+same path. Before the items, an app that pnpm installed gains the
+library's pnpm build and release-age policy, and every app gains the
+library's peer dependencies it lacks, at the versions the library has
+installed. Then the app must build and
+typecheck with its template's own `build` and `typecheck` scripts, and
+the stylesheet its `components.json` names must hold every token of the
+themes. Run it from a `package.json` script.
 
 ## From code
 
 `buildRegistry(config, root)`, `writeOutput` and `compareOutput` do the
 same as `build` and `check`, and `testRegistry` does what `test` does
-with what `loadConfig` returns. A registry with problems throws a
+with what `loadConfig` returns, and with `{ templates }` in place of
+`--template`. A registry with problems throws a
 `RegistryError` that lists them all. `testRegistry` throws that
 `RegistryError`, or an `InstallTestError` when it runs outside a
 `package.json` script, before it writes any app. Past that, it throws an

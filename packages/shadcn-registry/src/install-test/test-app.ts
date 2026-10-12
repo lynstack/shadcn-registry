@@ -1,6 +1,6 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 import path from "node:path";
-import { stringify as stringifyYaml } from "yaml";
 
 import {
   installedVersion,
@@ -9,29 +9,15 @@ import {
   readWorkspace,
 } from "#/project-files.ts";
 
-/** What the test app is written from. */
+/** What the packages of a test app are completed from. */
 interface TestApp {
   /** The library's folder, whose installed packages give the app its versions. */
   readonly root: string;
-  /** Where the app goes. */
+  /** The app that `shadcn init --template` wrote. */
   readonly appDir: string;
   /** More packages for the app, by name and range. */
   readonly extra: Readonly<Record<string, string>>;
 }
-
-/** The packages every test app has: Vite, React, TypeScript and Tailwind CSS v4. */
-const appPackages: readonly string[] = [
-  "@tailwindcss/cli",
-  "@tailwindcss/vite",
-  "@types/react",
-  "@types/react-dom",
-  "@vitejs/plugin-react",
-  "react",
-  "react-dom",
-  "tailwindcss",
-  "typescript",
-  "vite",
-];
 
 /** The settings of the library's pnpm workspace an install needs: its build and release-age policy. */
 const workspacePolicy: ReadonlySet<string> = new Set([
@@ -41,14 +27,7 @@ const workspacePolicy: ReadonlySet<string> = new Set([
   "onlyBuiltDependencies",
 ]);
 
-const jsonIndent = 2;
-
-function writeJson(file: string, value: unknown): void {
-  mkdirSync(path.dirname(file), { recursive: true });
-  writeFileSync(file, `${JSON.stringify(value, undefined, jsonIndent)}\n`);
-}
-
-/** The pnpm workspace settings above the library that the app's install needs. */
+/** The pnpm workspace settings above the library that the app's installs need. */
 function policyOf(root: string): Record<string, unknown> {
   const workspace = readWorkspace(root);
   return isRecord(workspace)
@@ -58,7 +37,49 @@ function policyOf(root: string): Record<string, unknown> {
     : {};
 }
 
-/** The library's peer dependencies, which the app has, as a real app would. */
+function isList(value: unknown): value is readonly unknown[] {
+  return Array.isArray(value);
+}
+
+/** A setting of the app's workspace with the library's added: lists joined, maps merged, the library's value otherwise. */
+function mergedSetting(app: unknown, library: unknown): unknown {
+  if (isList(app) && isList(library)) {
+    return [...new Set([...app, ...library])];
+  }
+  return isRecord(app) && isRecord(library) ? { ...app, ...library } : library;
+}
+
+/**
+ * Adds the library's pnpm build and release-age policy to the
+ * `pnpm-workspace.yaml` of the app, which its template may already
+ * have, so that every package an item brings installs as it does for
+ * the library. It does so only for an app that pnpm installed, as its
+ * `pnpm-lock.yaml` shows: the shadcn CLI takes a `pnpm-workspace.yaml`
+ * as the sign of pnpm before a `yarn.lock` or `package-lock.json`, and
+ * would install the items of an npm or Yarn app with pnpm.
+ */
+function writeWorkspacePolicy(app: TestApp): void {
+  const policy = Object.entries(policyOf(app.root));
+  if (
+    policy.length === 0 ||
+    !existsSync(path.join(app.appDir, "pnpm-lock.yaml"))
+  ) {
+    return;
+  }
+  const file = path.join(app.appDir, "pnpm-workspace.yaml");
+  const parsed: unknown = existsSync(file)
+    ? parseYaml(readFileSync(file, "utf8"))
+    : undefined;
+  const workspace: Record<string, unknown> = isRecord(parsed)
+    ? { ...parsed }
+    : {};
+  for (const [key, value] of policy) {
+    workspace[key] = mergedSetting(workspace[key], value);
+  }
+  writeFileSync(file, stringifyYaml(workspace));
+}
+
+/** The library's peer dependencies by name and range. */
 function peersOf(root: string): Record<string, string> {
   const manifest = readJson(path.join(root, "package.json"));
   const peers = isRecord(manifest) ? manifest["peerDependencies"] : undefined;
@@ -71,75 +92,49 @@ function peersOf(root: string): Record<string, string> {
     : {};
 }
 
-function devDependenciesOf(app: TestApp): Record<string, string> {
-  const versions = Object.fromEntries(
-    appPackages.map((name) => [
-      name,
-      installedVersion(app.root, name) ?? "latest",
-    ]),
+/** The packages the app's package.json lists, in any of its dependency fields. */
+function packagesOf(appDir: string): Set<string> {
+  const manifest = readJson(path.join(appDir, "package.json"));
+  return new Set(
+    [
+      "dependencies",
+      "devDependencies",
+      "optionalDependencies",
+      "peerDependencies",
+    ].flatMap((field) => {
+      const packages = isRecord(manifest) ? manifest[field] : undefined;
+      return isRecord(packages) ? Object.keys(packages) : [];
+    }),
   );
+}
+
+/**
+ * The packages to add to the app, as `name@range`: the library's peer
+ * dependencies its template lacks, at the versions the library has
+ * installed, as a user installs them for the library, then `extra`.
+ */
+function packagesToAdd(app: TestApp): string[] {
+  const present = packagesOf(app.appDir);
+  const packages: Record<string, string> = {};
   for (const [name, range] of Object.entries(peersOf(app.root))) {
-    versions[name] = installedVersion(app.root, name) ?? range;
+    if (!present.has(name)) {
+      packages[name] = installedVersion(app.root, name) ?? range;
+    }
   }
-  return { ...versions, ...app.extra };
+  Object.assign(packages, app.extra);
+  return Object.entries(packages).map(([name, range]) => `${name}@${range}`);
 }
 
-const tsconfig = {
-  compilerOptions: {
-    jsx: "react-jsx",
-    lib: ["ES2022", "DOM", "DOM.Iterable"],
-    module: "preserve",
-    noEmit: true,
-    paths: { "@/*": ["./src/*"] },
-    skipLibCheck: true,
-    strict: true,
-    target: "es2022",
-    types: [],
-  },
-  include: ["src", "vite.config.ts"],
-};
-
-/** The Vite configuration, whose file is how the shadcn CLI recognizes a Vite app. */
-const viteConfig = `import tailwindcss from "@tailwindcss/vite";
-import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
-
-export default defineConfig({ plugins: [react(), tailwindcss()] });
-`;
-
-/** Writes a new Vite app with React, TypeScript and Tailwind CSS v4, for `shadcn init`. */
-function writeTestApp(app: TestApp): void {
-  const { appDir } = app;
-  writeJson(path.join(appDir, "package.json"), {
-    devDependencies: devDependenciesOf(app),
-    name: "registry-test-app",
-    private: true,
-    type: "module",
-  });
-  writeJson(path.join(appDir, "tsconfig.json"), tsconfig);
-  writeFileSync(path.join(appDir, "vite.config.ts"), viteConfig);
-  writeFileSync(
-    path.join(appDir, "pnpm-workspace.yaml"),
-    stringifyYaml(policyOf(app.root)),
-  );
-  mkdirSync(path.join(appDir, "src"), { recursive: true });
-  writeFileSync(
-    path.join(appDir, "src", "index.css"),
-    '@import "tailwindcss";\n',
-  );
-}
-
-/** The path of a package's bin in the app, which runs with Node.js. */
-function binOf(appDir: string, name: string, bin: string): string {
-  const directory = path.join(appDir, "node_modules", ...name.split("/"));
-  const manifest = readJson(path.join(directory, "package.json"));
-  const bins = isRecord(manifest) ? manifest["bin"] : undefined;
-  const file = isRecord(bins) ? bins[bin] : bins;
-  if (typeof file !== "string") {
-    throw new TypeError(`${name} has no ${bin} command.`);
+/** The stylesheet the shadcn CLI writes the themes into, from the app's components.json. */
+function stylesheetOf(appDir: string): string {
+  const config = readJson(path.join(appDir, "components.json"));
+  const tailwind = isRecord(config) ? config["tailwind"] : undefined;
+  const css = isRecord(tailwind) ? tailwind["css"] : undefined;
+  if (typeof css !== "string" || css === "") {
+    throw new TypeError("The app's components.json names no stylesheet.");
   }
-  return path.join(directory, file);
+  return path.join(appDir, css);
 }
 
-export { binOf, writeTestApp };
+export { packagesToAdd, stylesheetOf, writeWorkspacePolicy };
 export type { TestApp };

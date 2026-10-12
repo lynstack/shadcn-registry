@@ -75,10 +75,15 @@ share a folder, and import the others by `#/`:
 - `item-fields.ts`: an item's JSON fields, with the empty ones dropped
   and the rest sorted by name.
 - `install-test/`: `shadcn-registry test`, entered through
-  `install-test.ts`, which installs the registry into a new app from a
-  local server; `test-app.ts` writes the app, `processes.ts` runs its
-  commands and the server, and `install-test-error.ts` holds the failure
-  the CLI prints by its message alone.
+  `install-test.ts`, which tests each template in turn against a local
+  server. `templates.ts` picks the templates to test;
+  `served-registry.ts` builds the registry onto that server;
+  `template-app.ts` runs the steps of one template's app:
+  `shadcn-cli.ts` runs the shadcn CLI, `test-app.ts` completes the app's
+  workspace policy and packages, and `app-checks.ts` builds,
+  typechecks and compares its tokens. `processes.ts` runs the commands
+  and the server, and `install-test-error.ts` holds the failure the CLI
+  prints by its message alone.
 - `cli.ts`: the `shadcn-registry` command.
 
 `test/project.ts` writes a temporary project for a test and builds it.

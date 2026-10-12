@@ -6,6 +6,7 @@ import {
   custom,
   exactOptional,
   literal,
+  minLength,
   picklist,
   pipe,
   record,
@@ -19,6 +20,7 @@ import {
 import type { Config, ItemRule } from "./config.ts";
 import type { Problem } from "./registry-error.ts";
 import { RegistryError } from "./registry-error.ts";
+import { testTemplates } from "./config.ts";
 
 /** Lowercase letters and digits joined by single hyphens, after `@`. */
 const namespacePattern = /^@[a-z0-9]+(?:-[a-z0-9]+)*$/u;
@@ -83,8 +85,14 @@ const themeItem = strictObject({
   type: picklist(["registry:style", "registry:theme"]),
 });
 
+const templates = pipe(
+  array(picklist(testTemplates)),
+  minLength(1, "The configuration's test.templates must name a template."),
+);
+
 const testOptions = strictObject({
   dependencies: exactOptional(ranges),
+  templates: exactOptional(templates),
 });
 
 const configObject = strictObject({

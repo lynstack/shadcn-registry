@@ -7,13 +7,26 @@ and the package follows [Semantic Versioning](https://semver.org/): until
 
 ## [Unreleased]
 
+### Added
+
+- `test.templates` and `--template` (`-t`) name the templates of
+  `shadcn init --template` that `shadcn-registry test` starts an app
+  from: `astro`, `next`, `react-router`, `start` or `vite`, one app each,
+  `vite` by default. `testRegistry` takes them as `{ templates }`.
+
 ### Changed
 
-- `shadcn-registry test` sets its app up as a user would: the app is a
-  Vite app, and the shadcn CLI writes its `components.json` with
-  `registry add` and `init`, from the first theme whose `extends` is
-  `none` or else shadcn's default style, before `add` installs the other
-  items over what `init` wrote.
+- **Breaking:** `shadcn-registry test` sets its app up as a user would:
+  `shadcn init --template` creates it with shadcn's default style, and
+  the shadcn CLI completes its `components.json` with `registry add` and
+  `init` with the first theme whose `extends` is `none`, before `add`
+  installs the other items over what `init` wrote. The app has the
+  versions its template has, plus the library's peer dependencies it
+  lacks, and must pass the template's own `build` and `typecheck`
+  scripts, in place of `tsc` and the Tailwind CSS CLI. The test needs
+  git, as the shadcn CLI clones its templates. A registry that passed
+  the test of 0.2.0 can fail it: give the app the versions it needs with
+  `test.dependencies`.
 
 ## [0.2.0] - 2026-10-11
 

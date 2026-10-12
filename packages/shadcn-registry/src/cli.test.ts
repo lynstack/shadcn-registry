@@ -132,6 +132,40 @@ describe("command line", () => {
     expect(option.output).not.toContain("    at ");
   });
 
+  it("refuses an unknown template before the test writes an app, with the usage", () => {
+    const root = createProject({
+      ...badge,
+      "shadcn-registry.config.js": config,
+    });
+    const { code, output } = run(
+      root,
+      "test",
+      "--template",
+      "vite",
+      "-t",
+      "laravel",
+    );
+
+    expect(code).toBe(1);
+    expect(output).toMatch(
+      /^Unknown template "laravel"; use astro, next, react-router, start, vite\.\nUsage: shadcn-registry/u,
+    );
+    expect(output).not.toContain("    at ");
+  });
+
+  it("refuses --template for a command other than test", () => {
+    const root = createProject({
+      ...badge,
+      "shadcn-registry.config.js": config,
+    });
+    const { code, output } = run(root, "build", "-t", "next");
+
+    expect(code).toBe(1);
+    expect(output).toMatch(
+      /^--template applies to test alone\.\nUsage: shadcn-registry/u,
+    );
+  });
+
   it("reports a registry that does not build before the test writes an app", () => {
     const root = createProject({
       "shadcn-registry.config.js": config,

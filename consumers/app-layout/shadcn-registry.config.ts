@@ -4,6 +4,7 @@ export default defineConfig({
   name: "app-layout",
   homepage: "https://example.com/app-layout",
   outDir: "public/r",
+  test: { templates: ["vite", "next"] },
   items: [
     {
       source: "src/components/ui/{item}.tsx",

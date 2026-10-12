@@ -40,6 +40,7 @@ const theme = {
 
 const test = {
   dependencies: { motion: "^12.0.0" },
+  templates: ["next", "vite"],
 } as const satisfies Required<TestOptions>;
 
 const full = {
@@ -81,6 +82,17 @@ describe("configuration schema", () => {
   it("refuses a default export that is no object", () => {
     expect(issuesOf("acme")).toStrictEqual([
       `The configuration's default export must be Object, not "acme".`,
+    ]);
+  });
+
+  it("refuses a template shadcn init cannot start an app from, and an empty list", () => {
+    expect(
+      issuesOf({ ...full, test: { templates: ["laravel"] } }),
+    ).toStrictEqual([
+      `The configuration's test.templates[0] must be ("astro" | "next" | "react-router" | "start" | "vite"), not "laravel".`,
+    ]);
+    expect(issuesOf({ ...full, test: { templates: [] } })).toStrictEqual([
+      "The configuration's test.templates must name a template.",
     ]);
   });
 

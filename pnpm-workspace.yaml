@@ -5,7 +5,6 @@ catalog:
   "@arethetypeswrong/core": 0.18.5
   "@base-ui/react": 1.9.0
   "@lynstack/class-recipe": 1.7.3
-  "@tailwindcss/cli": 4.3.3
   "@types/node": 24.19.2
   "@types/react": 19.3.0
   "@types/react-dom": 19.3.0

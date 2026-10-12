@@ -102,12 +102,37 @@ interface ThemeItem extends ItemDetails {
   readonly extends?: "none";
 }
 
-/** How `shadcn-registry test` builds the app it installs the items into. */
+/**
+ * The templates of `shadcn init --template` that `shadcn-registry test`
+ * can start an app from. `laravel` is not one, as the shadcn CLI only
+ * sets up an app that `laravel new` has created.
+ */
+const testTemplates = [
+  "astro",
+  "next",
+  "react-router",
+  "start",
+  "vite",
+] as const;
+
+/** A template of `shadcn init --template` that `shadcn-registry test` starts an app from. */
+type TestTemplate = (typeof testTemplates)[number];
+
+/** The templates `shadcn-registry test` starts from when none is named. */
+const defaultTestTemplates: readonly TestTemplate[] = ["vite"];
+
+/** How `shadcn-registry test` builds the apps it installs the items into. */
 interface TestOptions {
   /**
-   * More packages for the app, by name and range, beyond Vite, React,
-   * TypeScript, Tailwind CSS and the library's peer dependencies. An
-   * entry that names one of those sets its range instead.
+   * The templates of `shadcn init --template` to start an app from, one
+   * app each, `["vite"]` by default. The command's `--template` option
+   * replaces them.
+   */
+  readonly templates?: readonly TestTemplate[];
+  /**
+   * More packages for each app, by name and range, beyond what its
+   * template has and the library's peer dependencies it lacks. An entry
+   * that names one of those sets its range instead.
    */
   readonly dependencies?: Readonly<Record<string, string>>;
 }
@@ -177,7 +202,7 @@ function defineConfig(config: Config): Config {
   return config;
 }
 
-export { defaultOutDir, defineConfig };
+export { defaultOutDir, defaultTestTemplates, defineConfig, testTemplates };
 export type {
   Config,
   ItemDetails,
@@ -185,6 +210,7 @@ export type {
   ItemRule,
   ItemType,
   TestOptions,
+  TestTemplate,
   ThemeItem,
   ThemeType,
 };
