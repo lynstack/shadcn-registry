@@ -13,6 +13,12 @@ and the package follows [Semantic Versioning](https://semver.org/): until
   `shadcn init --template` that `shadcn-registry test` starts an app
   from: `astro`, `next`, `react-router`, `start` or `vite`, one app each,
   `vite` by default. `testRegistry` takes them as `{ templates }`.
+- `emptyOutDir`, as Vite's `build.emptyOutDir`: `true` by default, as
+  before, deletes the JSON files in `outDir` that the build does not
+  write, and `false` keeps them.
+- `build` and `watch` warn, before they write, about an `outDir` that is
+  the root or a folder above it, where emptying it deletes
+  `package.json`.
 
 ### Changed
 
@@ -27,6 +33,23 @@ and the package follows [Semantic Versioning](https://semver.org/): until
   git, as the shadcn CLI clones its templates. A registry that passed
   the test of 0.2.0 can fail it: give the app the versions it needs with
   `test.dependencies`.
+- **Breaking:** every build, and `loadConfig`, checks the configuration
+  against a schema, and reports each field that is missing, of the wrong
+  type or unknown, with its path, at once. A configuration with a field
+  it does not know, such as a misspelled `outdir`, is refused instead of
+  ignored, and `loadConfig` throws a `RegistryError` instead of a
+  `TypeError` for a default export that is no configuration.
+- **Breaking:** `BuiltRegistry` has an `emptyOutDir` field, which
+  `writeOutput` and `compareOutput` read.
+
+### Fixed
+
+- A `name` that makes a namespace the shadcn CLI cannot resolve, such as
+  `Acme UI`, is refused when neither `namespace` nor `url` is set; it
+  used to build `registryDependencies` no app could install.
+- The refusal of an alias import in a `registry:file`, a JavaScript,
+  `.mts` or `.d.ts` file says why: the shadcn CLI does not map its
+  aliases, so it resolves only through the app's own.
 
 ## [0.2.0] - 2026-10-11
 
